@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Header = () => {
   return (
-    <div className="w-full width-container py-4 fixed bg-gray-50 z-[2]">
+    <div className="w-full width-container py-4 fixed bg-gray-50 z-[2] border-b-2 border-gray-400">
       <nav className="flex items-center justify-between space-x-1">
         <ul className="flex items-center max-w-full mr-3">
           <li className="py-1 px-1 sm:px-3 rounded-lg text-gray-600 hover:bg-gray-200">
