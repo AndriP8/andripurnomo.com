@@ -23,3 +23,9 @@
     @apply text-base;
   }
 }
+
+@layer components {
+  .width-container {
+    @apply px-4 sm:px-8 md:px-16;
+  }
+}
