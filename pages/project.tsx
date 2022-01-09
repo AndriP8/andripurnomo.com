@@ -44,7 +44,10 @@ const project = () => {
             </a>
             <p className="py-4 text-lg">
               A web that displays a list of trending movies and a description of
-              the film that consume data provided by TMDB{" "}
+              the film that consume data provided by{" "}
+              <a href="https://www.themoviedb.org/" className="underline">
+                TMDB
+              </a>
             </p>
             <p className="mb-4 text-sm underline">
               !!! The search feature is having problems because the api source
@@ -73,7 +76,12 @@ const project = () => {
               Game store App
             </a>
             <p className="py-4 text-lg">
-              A website that provides a way to top up coins for various games
+              A website that provides a way to top up coins for various games,
+              this website is the final project of the fullstack javascript
+              class at{" "}
+              <a href="https://buildwithangga.com/" className="underline">
+                Buildwithangga
+              </a>
             </p>
             <div className="flex items-center justify-start flex-wrap">
               <p className="p-2 mr-4 border-2 rounded-xl border-black bg-gray-500">
