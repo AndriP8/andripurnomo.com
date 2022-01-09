@@ -26,6 +26,6 @@
 
 @layer components {
   .width-container {
-    @apply px-4 sm:px-8 md:px-16;
+    @apply px-8 sm:px-52 md:px-60 lg:px-72 xl:px-80;
   }
 }
