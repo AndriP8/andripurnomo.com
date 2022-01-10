@@ -10,14 +10,15 @@ interface HeaderItemProps {
 
 const HeaderItem = ({ children, href, active }: HeaderItemProps) => {
   const navItem = cx({
-    "py-1 px-1 sm:px-3 mx-1 rounded-lg text-gray-600 hover:bg-gray-200": true,
-    "bg-gray-400 hover:bg-gray-400": active,
+    "py-2 px-3 mx-1 rounded-lg text-gray-600 hover:bg-gray-200 text-black":
+      true,
+    "bg-gray-200": active,
   });
 
   return (
-    <li className={navItem}>
+    <li>
       <Link href={href}>
-        <a>{children}</a>
+        <a className={navItem}>{children}</a>
       </Link>
     </li>
   );
