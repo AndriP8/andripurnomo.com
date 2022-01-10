@@ -3,6 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 @layer base {
+  body {
+    @apply bg-gray-50 min-h-screen h-auto;
+  }
+
   h1 {
     @apply text-3xl;
   }
@@ -26,6 +30,6 @@
 
 @layer components {
   .width-container {
-    @apply px-8 sm:px-52 md:px-60 lg:px-72 xl:px-80;
+    @apply px-8 sm:px-24 md:px-36 lg:px-64 xl:px-80;
   }
 }
