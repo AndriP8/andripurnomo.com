@@ -1,9 +1,11 @@
-import Layout from "layout";
+import Navbar from "Navbar";
+import Footer from "Footer";
 
 const About = () => {
   return (
-    <Layout>
-      <div className="mt-28 width-container w-full">
+    <div className="h-full w-full bg-gray-50 mb-16 sm:mb-0">
+      <Navbar />
+      <div className="pt-28 width-container w-full">
         <div className="py-8">
           <h1 className="text-3xl">About</h1>
           <h2> Hello! I&rsquo;m Andri as a Front-end developer</h2>
@@ -47,7 +49,8 @@ const About = () => {
           </div>
         </div>
       </div>
-    </Layout>
+      <Footer />
+    </div>
   );
 };
 
