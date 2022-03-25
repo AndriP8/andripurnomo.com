@@ -15,8 +15,8 @@ const Header = () => {
           <NavbarItem href="/" active={page === "/"}>
             Home
           </NavbarItem>
-          <NavbarItem href="/project" active={page === "/project"}>
-            Project
+          <NavbarItem href="/projects" active={page === "/projects"}>
+            Projects
           </NavbarItem>
           <NavbarItem href="/blog" active={page === "/blog"}>
             Blog
