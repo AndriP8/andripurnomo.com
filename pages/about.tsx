@@ -1,4 +1,5 @@
-import Layout from "layout";
+import Layout from 'layout';
+import Link from 'next/link';
 
 const About = () => {
   return (
@@ -18,10 +19,8 @@ const About = () => {
               A year later I was interested in learning more about web
               development because I found a passion in writing code, especially
               to create website displays, finally a few months later I decided
-              to join a bootcamp for web development and I chose{" "}
-              <a href="https://binaracademy.com" className="underline">
-                Binar Academy{" "}
-              </a>{" "}
+              to join a bootcamp for web development and I chose{' '}
+              <Link href="https://binaracademy.com">Binar Academy</Link>
               where I could learn more about web development.
             </p>
             <p className="my-2">
@@ -35,13 +34,9 @@ const About = () => {
               After six months of bootcamp process, I passed without fail in
               every chapter but I felt not confident with my abilities, finally
               I got a good environment to develop my skills and started taking
-              several online classes such as{" "}
-              <a href="https://frontendmasters.com/" className="underline">
-                Frontend masters,
-              </a>{" "}
-              <a href="https://justjavascript.com/" className="underline">
-                JustJavascript{" "}
-              </a>{" "}
+              several online classes such as{' '}
+              <Link href="https://frontendmasters.com/">Frontend masters</Link>
+              <Link href="https://justjavascript.com/">JustJavascript</Link>
               and reading articles about Frontend development.
             </p>
           </div>
