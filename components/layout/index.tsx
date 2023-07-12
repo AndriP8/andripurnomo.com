@@ -1,14 +1,15 @@
-import React from "react";
-import Footer from "layout/Footer";
-import Header from "layout/Header";
+import { Box } from '@mantine/core';
+import Footer from 'layout/Footer';
+import Header from 'layout/Header';
+import React from 'react';
 
 const Layout: React.FC = ({ children }) => {
   return (
-    <div className="min-h-screen h-full flex flex-col bg-gray-50 items-center font-inter">
+    <Box mih={'100vh'} bg={'gray'} px={'15vw'}>
       <Header />
       {children}
       <Footer />
-    </div>
+    </Box>
   );
 };
 
