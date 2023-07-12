@@ -1,9 +1,11 @@
 import { Box, Divider, Flex } from '@mantine/core';
+import { useRouter } from 'next/router';
 
 import HeaderItem from './HeaderItem';
 
 const Header = () => {
-  const page = window.location.pathname;
+  const router = useRouter();
+  const page = router.pathname;
 
   return (
     <Box>
