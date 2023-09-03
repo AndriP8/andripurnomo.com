@@ -1,35 +1,36 @@
-import { HiOutlineMail } from 'react-icons/hi';
+import { Flex, SimpleGrid, Text } from '@chakra-ui/react';
+import Link from 'next/link';
 import {
-  AiOutlineLinkedin,
   AiOutlineGithub,
+  AiOutlineLinkedin,
   AiOutlineTwitter,
 } from 'react-icons/ai';
-import Link from 'next/link';
+import { HiOutlineMail } from 'react-icons/hi';
 
 const Footer = () => {
+  const yearNow = new Date().getFullYear();
   return (
-    <footer className="py-6">
-      <div className="flex flex-col items-center justify-center">
-        <p className="text-lg font-bold">Find me on</p>
-        <div className="flex items-center justify-center mt-3 mb-5">
+    <footer style={{ marginBottom: 82 }}>
+      <SimpleGrid justifyContent="center" color="black" rowGap={2}>
+        <Text fontWeight="semibold" fontSize={18} textAlign="center">
+          Find me on
+        </Text>
+        <Flex alignItems="center" justifyContent="space-between">
           <Link href="mailto:andri.adrp@gmail.com">
-            <HiOutlineMail className="text-3xl mx-1 cursor-pointer" />
+            <HiOutlineMail style={{ fontSize: 32 }} />
           </Link>
           <Link href="https://www.linkedin.com/in/andri-purnomo/">
-            <AiOutlineLinkedin
-              className="text-3xl mx-1 cursor-pointer"
-              href=""
-            />
+            <AiOutlineLinkedin style={{ fontSize: 32 }} />
           </Link>
-          <Link href="https://twitter.com/Andrikp3/">
-            <AiOutlineTwitter className="text-3xl mx-1 cursor-pointer" />
+          <Link href="https://twitter.com/andrii_purnomo/">
+            <AiOutlineTwitter style={{ fontSize: 32 }} />
           </Link>
           <Link href="https://github.com/andrip8/">
-            <AiOutlineGithub className="text-3xl mx-1 cursor-pointer" />
+            <AiOutlineGithub style={{ fontSize: 32 }} />
           </Link>
-        </div>
-        <p className="">© Andri Purnomo 2022</p>
-      </div>
+        </Flex>
+        <p className="">© Andri Purnomo {yearNow}</p>
+      </SimpleGrid>
     </footer>
   );
 };
