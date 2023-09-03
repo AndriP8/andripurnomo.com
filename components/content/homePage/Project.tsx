@@ -1,12 +1,4 @@
-import {
-  Box,
-  Card,
-  Flex,
-  Heading,
-  SimpleGrid,
-  Text,
-  useMediaQuery,
-} from '@chakra-ui/react';
+import { Box, Card, Flex, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import TechStackIcon from 'icons/TechStakIcon';
 import Link from 'next/link';
 
@@ -22,7 +14,6 @@ type ProjectType = {
 };
 
 const Project = () => {
-  const isMediaSm = useMediaQuery('(min-width: 48em)');
   // already infer, consider to delete the type
   const projects: ProjectType[] = [
     {
@@ -47,7 +38,7 @@ const Project = () => {
   return (
     <Box color="black">
       <Heading as="h2" fontWeight="light" marginBottom={3}>
-        Latest Project
+        Latest Projects
       </Heading>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
         {projects.map((project) => (
