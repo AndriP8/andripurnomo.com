@@ -1,9 +1,11 @@
-import { Box, Text } from '@mantine/core';
+import { Box, Heading, Text } from '@chakra-ui/react';
 
 const Introduction = () => {
   return (
-    <Box>
-      <Text size={32}>Hi, Im Andri Purnomo</Text>
+    <Box color="black">
+      <Heading as="h1" fontSize={32} fontWeight="normal" lineHeight={2}>
+        Hi, Im Andri Purnomo
+      </Heading>
       <Text>
         Someone who is very interested in frontend development since late 2020.
         I am currently working as Frontend Engineer, my main tech stack is React

@@ -1,4 +1,12 @@
-import { Box, Card, Flex, SimpleGrid, Text, Title } from '@mantine/core';
+import {
+  Box,
+  Card,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Text,
+  useMediaQuery,
+} from '@chakra-ui/react';
 import TechStackIcon from 'icons/TechStakIcon';
 import Link from 'next/link';
 
@@ -14,6 +22,8 @@ type ProjectType = {
 };
 
 const Project = () => {
+  const isMediaSm = useMediaQuery('(min-width: 48em)');
+  // already infer, consider to delete the type
   const projects: ProjectType[] = [
     {
       id: '1',
@@ -35,51 +45,52 @@ const Project = () => {
     },
   ];
   return (
-    <Box>
-      <Title order={2} weight={'normal'} mb={10}>
+    <Box color="black">
+      <Heading as="h2" fontWeight="light" marginBottom={3}>
         Latest Project
-      </Title>
-      <SimpleGrid cols={2} spacing={24}>
+      </Heading>
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
         {projects.map((project) => (
           <Card
             key={project.id}
-            p={15}
-            bg="gray"
-            radius={8}
-            sx={{ borderColor: 'black', border: '1px solid' }}
+            padding={15}
+            backgroundColor="gray.200"
+            borderRadius={8}
+            border="1px solid black"
+            color="inherit"
           >
-            <Flex direction={'column'} gap={10}>
-              <Title order={3} weight={'bold'}>
+            <Flex direction="column" gap={3}>
+              <Heading as="h3" fontWeight="semibold" fontSize={24}>
                 {project.title}
-              </Title>
+              </Heading>
               <Text>{project.description}</Text>
-              <Flex gap={10}>
+              <Flex gap={3}>
                 <Text
-                  component={Link}
+                  as={Link}
                   href={project.sourceCode}
                   color="black"
-                  weight={'bold'}
+                  fontWeight="bold"
                   target="_blank"
                   rel="noopener"
-                  underline
+                  textDecor="underline"
                 >
                   Source Code
                 </Text>
                 <Text
-                  component={Link}
+                  as={Link}
                   href={project.sourceDemo}
                   color="black"
-                  weight={'bold'}
+                  fontWeight="bold"
                   target="_blank"
                   rel="noopener"
-                  underline
+                  textDecor="underline"
                 >
                   Live demo
                 </Text>
               </Flex>
               <Box>
                 <Text>Tech stack:</Text>
-                <Flex gap={10} mt={10}>
+                <Flex gap={3} marginTop={3}>
                   {project.techStacks.map((stack) => (
                     <TechStackIcon key={stack} stack={stack} />
                   ))}

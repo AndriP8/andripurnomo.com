@@ -1,4 +1,3 @@
-import { Box } from '@mantine/core';
 import Link from 'next/link';
 import React from 'react';
 
@@ -13,13 +12,11 @@ const HeaderItem = ({
   active,
 }: React.PropsWithChildren<HeaderItemProps>) => {
   return (
-    <Box
-      component={Link}
-      href={href}
+    <nav
       style={{ color: 'black', textDecoration: active ? 'underline' : 'none' }}
     >
-      {children}
-    </Box>
+      <Link href={href}>{children}</Link>
+    </nav>
   );
 };
 

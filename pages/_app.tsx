@@ -1,31 +1,22 @@
-import { MantineProvider } from '@mantine/core';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
+import { Poppins } from 'next/font/google';
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: '400',
+});
+
+const theme = extendTheme({
+  fonts: {
+    body: poppins.style.fontFamily,
+  },
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <MantineProvider
-      withGlobalStyles
-      withNormalizeCSS
-      theme={{
-        colors: {
-          gray: [
-            '#F4F4F4',
-            '#F2F2F2',
-            '#EFEFEF',
-            '#EDEDED',
-            '#EBEBEB',
-            '#E8E8E8',
-            '#E6E6E6',
-            '#E4E4E4',
-            '#E1E1E1',
-            '#DFDFDF',
-          ],
-        },
-        fontFamily: 'Poppins, sans-serif',
-      }}
-    >
+    <ChakraProvider theme={theme}>
       <Component {...pageProps} />
-    </MantineProvider>
+    </ChakraProvider>
   );
 }
 

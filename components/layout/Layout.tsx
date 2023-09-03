@@ -1,11 +1,11 @@
-import { Box } from '@mantine/core';
+import { Box } from '@chakra-ui/react';
 import Footer from 'layout/Footer';
 import Header from 'layout/Header';
 import React from 'react';
 
 const Layout: React.FC = ({ children }) => {
   return (
-    <Box mih={'100vh'} bg={'gray'} px={'15vw'}>
+    <Box minHeight="100vh" bgColor="gray.200" paddingInline="15vw">
       <Header />
       {children}
       <Footer />

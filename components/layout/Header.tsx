@@ -1,4 +1,4 @@
-import { Box, Divider, Flex } from '@mantine/core';
+import { Box, Divider, Flex } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 import HeaderItem from './HeaderItem';
@@ -9,7 +9,7 @@ const Header = () => {
 
   return (
     <Box>
-      <Flex justify={'start'} align={'center'} gap={35} py={16}>
+      <Flex justify="start" alignItems="center" gap={35} paddingBlock={4}>
         <HeaderItem href="/" active={page === '/'}>
           Home
         </HeaderItem>
@@ -20,7 +20,7 @@ const Header = () => {
           About
         </HeaderItem>
       </Flex>
-      <Divider color="dark.9" />
+      <Divider backgroundColor="black" />
     </Box>
   );
 };
