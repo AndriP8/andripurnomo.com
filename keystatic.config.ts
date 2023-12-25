@@ -1,5 +1,5 @@
-import { config, fields, collection } from '@keystatic/core';
-import { ComponentBlocks } from '@ui/components/componentBlocks';
+import { collection, config, fields } from '@keystatic/core';
+import { ComponentBlocks } from '@ui/components';
 
 export default config({
   storage: {

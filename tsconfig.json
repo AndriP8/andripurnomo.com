@@ -20,7 +20,7 @@
       }
     ],
     "paths": {
-      "@lib/*": ["./app/lib/index.ts"],
+      "@lib/*": ["./app/lib/*"],
       "@ui/*": ["./app/ui/*"]
     }
   },
