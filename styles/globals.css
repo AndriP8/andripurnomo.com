@@ -4,7 +4,7 @@
 @tailwind utilities;
 @layer base {
   body {
-    @apply bg-gray-50 min-h-screen h-auto;
+    @apply bg-gray-50 min-h-screen h-auto font-inter;
   }
 
   h1 {
@@ -29,11 +29,20 @@
 }
 
 @layer components {
+  .space-content {
+    @apply px-6 md:px-16 lg:px-36;
+  }
+  .wrapper-link-blog {
+    @apply p-2 border-2 border-transparent;
+  }
   .wrapper-link-blog:hover {
     @apply rounded-xl border-2 border-solid border-gray-500;
     transition: border 150ms ease-in,
       transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
       box-shadow 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
     transform: translate3d(0, -8px, 0);
+  }
+  .break-word-blog-content > * {
+    @apply break-words;
   }
 }
