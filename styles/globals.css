@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -29,7 +29,11 @@
 }
 
 @layer components {
-  .width-container {
-    @apply px-8 sm:px-24 md:px-36 lg:px-64 xl:px-80;
+  .wrapper-link-blog:hover {
+    @apply rounded-xl border-2 border-solid border-gray-500;
+    transition: border 150ms ease-in,
+      transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translate3d(0, -8px, 0);
   }
 }
