@@ -16,7 +16,7 @@ export default async function Page() {
       <Navbar />
       <main className="space-content">
         <div className="flex flex-col gap-y-28 my-28">
-          <div>
+          <div className="prose max-w-none">
             <h1 className="text-4xl">Hi, Im Andri Purnomo</h1>
             <p className="text-lg">
               Someone who is very interested in frontend development since late
