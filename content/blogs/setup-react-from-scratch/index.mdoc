@@ -1,0 +1,247 @@
+---
+title: Setup React from scratch
+cover:
+  resource: cover/resource.jpg
+  owner: Elle Hughes
+  ownerLink: https://unsplash.com/@ohforkyes
+  alt: flour and eggs to make the dough
+timeToRead: 5
+createdAt: '2023-12-27'
+---
+This blog references the [original blog](https://medium.com/@andri_purnomo/setup-react-dari-awal-tanpa-cra-672c9defa8d4) from Medium, this version is just a different platform and has some updates.
+
+Many Frontend engineers that use React commonly use templates like [Create React App](https://create-react-app.dev/docs/getting-started) or [Vite template](https://vitejs.dev/guide/#scaffolding-your-first-vite-project) for init a React project, because with that template we can easily use React without setup anything from scratch, like configuring Babel for javascript code can be transpile to javascript version that browser supported and setup Webpack to bundle all javascript files into one.
+
+# **Setup React**
+
+## **Init project**
+
+- First, we should init node project, so we can install packages that we need.
+
+```javascript
+npm init -y
+```
+
+## **Install react & react-dom**
+
+- [React](https://react.dev/)&nbsp;is a library that used for building user interfaces.
+- [React-dom](https://react.dev/reference/react-dom)&nbsp;is used to render components into DOM.
+
+## Create a component and render it into DOM
+
+- Create file `index.jsx` containing a component called `App` and component `App` will be rendered into DOM using the method `render` from function `reactDom.createRoot()`.
+
+```javascript
+import React from 'react';
+import reactDom from 'react-dom/client';
+
+const App = () => {
+  return (
+    <div>
+      <h1>Hello world</h1>
+    </div>
+  );
+};
+
+const root = reactDom.createRoot(document.getElementById('root'));
+root.render(<App />);
+```
+
+# **Bundle code using Webpack**
+
+What does bundle code mean? when we develop a website, we have many javascript files that should be inserted one by one into `<script>` tags in HTML. So that will be troublesome for us because there may be some files that we forgot to add. With Webpack we just need to add the result of the bundling into HTML.
+
+## **Install Webpack**
+
+We need two Webpack packages
+
+- `webpack`
+- `webpack-cli`
+
+```java
+pnpm add -D webpack webpack-cli
+```
+
+## Setup Webpack config
+
+Create a file in the top-level directory called `webpack.config.js`
+
+```javascript
+const path = require("path");
+
+module.exports = {
+  mode: "development",
+  entry: path.resolve(__dirname, "./index.jsx"),
+  output: {
+    path: path.resolve(__dirname, "./build"),
+    filename: "index.js",
+    clean: true,
+  },
+  resolve: {
+    extensions: [".js", ".jsx"],
+  },
+};
+```
+
+- `mode` determines should run in development or production mode.
+- `entry` determines the entry point file from the project, in this case, is `index.jsx`.
+- `output` determines where the results of the bundle.
+- `resolve` determines what file extension should bundle.
+
+# **Transpile JSX becomes React.createElement**
+
+Why we should transpile JSX? Because JSX is not supported in the browser. We can use tools called [Babel](https://babeljs.io/).
+
+## **Install Babel**
+
+We need some Babel packages
+
+- `@babel/core`
+- `@babel/cli`
+- `@babel/preset-env` allows you to use the latest JavaScript without needing to micromanage which syntax transforms (and optionally, browser polyfills) are needed by your target environment.
+- `@babel/preset-react` used to transpile JSX becomes `React.createElement`.
+
+```java
+pnpm add -D @babel/core @babel/cli @babel/preset-env @babel/preset-react
+```
+
+## **Setup Babel Preset**
+
+After installing Babel preset, we should create a file in the top-level directory called `.babelrc` to tell Babel what preset should we use.
+
+```javascript
+{
+  "presets": ["@babel/preset-env", "@babel/preset-react"]
+}
+```
+
+## Run Babel while bundling
+
+We should adjust Webpack config to run Babel, so that the result of the bundle does not contain JSX syntax, but should contain the result of the compile JSX that can be read by a browser.
+
+```javascript
+pnpm install babel-loader
+```
+
+Then, we can adjust Webpack configuration like this
+
+```javascript
+const path = require("path");
+
+module.exports = {
+  mode: "development",
+  entry: path.resolve(__dirname, "./index.jsx"),
+  output: {
+    path: path.resolve(__dirname, "./build"),
+    filename: "index.js",
+    clean: true,
+  },
+  resolve: {
+    extensions: [".js", ".jsx"],
+  },  
+// new code :  
+  module: {
+    rules: [
+      {
+        test: /\\.(js)x?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "babel-loader",
+          },
+        ],
+      },
+    ],
+  },
+};
+```
+
+When Webpack finds files `.js` or `.jsx`, so will transpile JSX in that code to become `React.createElement`.
+
+# Running a project with **Webpack**
+
+## Create HTML file
+
+Create file `index.html` with an empty `div` that has attribute `id=”root”` and will be used by `react-dom` to render components inside that `div`.
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React from scratch</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
+## **Setup Webpack so can run HTML file**
+
+We need two packages to run HTML files in Webpack
+
+- `html-webpack-plugin`&nbsp;it will be used to insert the result of the bundle(javascript files) to `<script>` tag in HTML.
+- `webpack-dev-server`&nbsp;used to run Webpack as a local server.
+
+Then, we need to add&nbsp;`plugins`&nbsp;in Webpack configuration
+
+```javascript
+const path = require("path");
+const htmlWebpackPlugin = require("html-webpack-plugin");
+
+module.exports = {
+  mode: "development",
+  entry: path.resolve(__dirname, "./index.jsx"),
+  output: {
+    path: path.resolve(__dirname, "./build"),
+    filename: "index.js",
+    clean: true,
+  },
+  resolve: {
+    extensions: [".js", ".jsx"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\\.(js)x?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "babel-loader",
+          },
+        ],
+      },
+    ],
+  },  
+// new code :
+  plugins: [
+    new htmlWebpackPlugin({
+      template: path.resolve(__dirname, "./index.html"),
+    }),
+  ],
+};
+```
+
+## Adding npm script to run and build the project
+
+```javascript
+"scripts": {
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack serve --config webpack.config.js"
+  }
+
+```
+
+- `build` used to generate the result of the bundle
+- `start` used to run the project
+
+# Conclusion
+
+We already set up React project from scratch without using a template, and I think this is something good to know as an Engineer, we can easily use a template for creating a project, but we should understand how it works without a template or we should understand behind the scene of something.
+
+You can access the code in this [repository](https://github.com/AndriP8/React-from-scratch)
+
+In the next part, I will add adjustments for Webpack, so it can add styling and asset files
