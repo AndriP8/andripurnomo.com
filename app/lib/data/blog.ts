@@ -9,11 +9,17 @@ export async function getBlogData(slug: string) {
 
 export const getBlogs = async (numBlogs = 5) => {
   const blogs = await reader.collections.blogs.all();
+  const sortedBlogs = blogs.sort((a, b) => {
+    return (
+      new Date(b.entry.createdAt).getTime() -
+      new Date(a.entry.createdAt).getTime()
+    );
+  });
 
   if (numBlogs) {
-    return blogs.slice(0, numBlogs);
+    return sortedBlogs.slice(0, numBlogs);
   } else {
-    return blogs;
+    return sortedBlogs;
   }
 };
 
