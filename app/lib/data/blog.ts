@@ -1,9 +1,7 @@
 import { reader } from './reader';
 
 export async function getBlogData(slug: string) {
-  const blogData = await reader.collections.blogs.read(slug, {
-    resolveLinkedFiles: true,
-  });
+  const blogData = await reader.collections.blogs.read(slug);
   return blogData;
 }
 

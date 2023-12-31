@@ -34,7 +34,6 @@ type PageProps = {
 
 export default async function Page({ params }: PageProps) {
   const blog = await getBlogData(params.slug);
-
   if (blog) {
     return (
       <div className="min-h-[80vh] h-full w-full bg-gray-50 max-w-4xl mx-auto my-28">
@@ -70,7 +69,7 @@ export default async function Page({ params }: PageProps) {
           <main className="w-full mt-20 prose max-w-none break-word-blog-content">
             {blog.content ? (
               <DocumentRenderer
-                document={blog.content}
+                document={await blog.content()}
                 componentBlocks={{
                   youtubeEmbed: (props) => (
                     <YouTubeEmbed youtubeLink={props.youtubeLink} />
