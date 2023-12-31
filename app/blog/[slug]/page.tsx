@@ -30,7 +30,7 @@ export default async function Page({ params }: PageProps) {
   return (
     <div className="min-h-[80vh] h-full w-full bg-gray-50 max-w-4xl mx-auto my-28">
       {blog ? (
-        <div className="mx-6 md:mx-0">
+        <div className="mx-6 md:mx-16 lg:mx-0">
           <h1 className="text-4xl font-medium">{blog.title}</h1>
           <div className="mt-1 flex items-center gap-x-2 text-gray-500">
             <p>{formatDate(blog.createdAt)}</p>
@@ -92,7 +92,10 @@ export default async function Page({ params }: PageProps) {
           </main>
         </div>
       ) : (
-        <h1>Something went wrong</h1>
+        <div className="max-w-lg mx-auto">
+          <h2>Oops! Something went wrong.</h2>
+          <p>Please refresh the page to try again.</p>
+        </div>
       )}
     </div>
   );
