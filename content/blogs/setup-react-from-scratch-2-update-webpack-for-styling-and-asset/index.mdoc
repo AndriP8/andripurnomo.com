@@ -1,0 +1,147 @@
+---
+title: Setup React from scratch 2 - Update webpack for styling and asset
+cover:
+  resource: cover/resource.jpg
+  owner: ' Jacob Thomas'
+  ownerLink: https://unsplash.com/@jacob225
+  alt: a brown cakes with cherry on the top
+timeToRead: 3
+createdAt: '2023-12-31'
+---
+In the previous part, we already setup react from scratch, but it is not totally complete, we can’t add CSS files for styling and assets. So therefore in this part, we will finish our webpack configuration
+
+# Update webpack configuration
+
+## Styling configuration
+
+To make a website more beautiful, we need CSS files to set colors, typography, layout, etc. So we need to add a new configuration to our webpack to read CSS files.
+
+We need two package
+
+- `style-loader`&nbsp;used for adding CSS files into components.
+- `css-loader`&nbsp;used to make components can read CSS files
+
+```JavaScript
+pnpm install --save-dev style-loader css-loader
+```
+
+## Create CSS files
+
+- Create files `index.css` with any style, in this case, my styling like this
+
+```css
+.title {
+  font-size: 36px;
+  color: pink;
+}
+```
+
+- Import file&nbsp;`index.css`&nbsp;kedalam komponen utama yaitu&nbsp;`index.jsx`&nbsp;agar komponent tersebut dapat menerapkan styling yang sudah ada.
+- Import file&nbsp;`index.css`&nbsp;to the root component&nbsp;`index.jsx`
+
+```javascript
+import React from "react";
+import reactDom from "react-dom";
+
+// import CSS
+import "./index.css";
+
+const App = () => {
+  return (
+    <div>
+      {/* applying styling to the classname */}
+      <h1 className="title">Hello world</h1>
+    </div>
+  );
+};
+
+const root = reactDom.createRoot(document.getElementById('root'));
+root.render(<App />);
+```
+
+## Configuration assets on Webpack
+
+```java
+const path = require("path");
+const htmlWebpackPlugin = require("html-webpack-plugin");module.exports = {
+  mode: "development",
+  entry: path.resolve(__dirname, "./index.jsx"),
+  output: {
+    path: path.resolve(__dirname, "./build"),
+    filename: "index.js",
+    clean: true,
+  },
+  resolve: {
+    extensions: [".js", ".jsx"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\\\\.(js)x?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "babel-loader",
+          },
+        ],
+      },
+      {
+        test: /\\\\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+	// configuration for images
+      {
+        test: /\\\\.(png|svg|jpg|jpeg|gif)/i,
+        type: "asset/resource",
+        generator: {
+          filename: "assets/img/[hash][ext][query]",
+        },
+      },
+	// end of configuration for images
+    ],
+  },
+  plugins: [
+    new htmlWebpackPlugin({
+      template: path.resolve(__dirname, "./index.html"),
+    }),
+  ],
+};
+```
+
+- `test`&nbsp;allowed file extensions
+- `type`&nbsp;what module should use
+- `generator`&nbsp;akan menghasilkan sebuah file kedalam sebuah folder yang sudah di tentukan.
+- `generator`&nbsp;will generate a result of the file and will be in the defined path
+
+After adding that configuration, we should add an image to the component and run `pnpm build` to test whether our image was successful, and if successful, it will automatically create a new image file in path `build/assets/img/nama_file_hash.png`
+
+```
+import React from "react";
+import reactDom from "react-dom";
+import Logo from "./assets/logo.png";
+import "./index.css";
+
+const App = () => {
+  return (
+    <div>
+      <h1 className="title">Hello world</h1>
+      {/* add new image */}
+      <img src={Logo} alt="logo-react" />
+    </div>
+  );
+};
+
+const root = reactDom.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+```
+
+The last step is should run `pnpm start` to check are our applied styling and assets can work as expected on the website
+
+# **Conclusion**
+
+In this stage, we can use React like what React templates do, we can add styling and assets to each page on the website.
+
+[Setup React from scratch part 1](https://andripurnomo.vercel.app/blog/setup-react-from-scratch)
+
+You can access the code in this&nbsp;[**repository**](https://github.com/AndriP8/React-from-scratch)
