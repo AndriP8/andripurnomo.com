@@ -3,7 +3,11 @@ import { ComponentBlocks } from '@ui/components';
 
 export default config({
   storage: {
-    kind: 'local',
+    kind: 'github',
+    repo: {
+      owner: 'AndriP8',
+      name: 'andripurnomo.vercel.app',
+    },
   },
   collections: {
     blogs: collection({
