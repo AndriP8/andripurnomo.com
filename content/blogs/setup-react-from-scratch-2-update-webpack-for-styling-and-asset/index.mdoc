@@ -41,7 +41,7 @@ pnpm install --save-dev style-loader css-loader
 
 ```javascript
 import React from "react";
-import reactDom from "react-dom";
+import reactDom from 'react-dom/client';
 
 // import CSS
 import "./index.css";
@@ -63,7 +63,8 @@ root.render(<App />);
 
 ```java
 const path = require("path");
-const htmlWebpackPlugin = require("html-webpack-plugin");module.exports = {
+const htmlWebpackPlugin = require("html-webpack-plugin");
+module.exports = {
   mode: "development",
   entry: path.resolve(__dirname, "./index.jsx"),
   output: {
@@ -115,9 +116,9 @@ const htmlWebpackPlugin = require("html-webpack-plugin");module.exports = {
 
 After adding that configuration, we should add an image to the component and run `pnpm build` to test whether our image was successful, and if successful, it will automatically create a new image file in path `build/assets/img/nama_file_hash.png`
 
-```
+```java
 import React from "react";
-import reactDom from "react-dom";
+import reactDom from 'react-dom/client';
 import Logo from "./assets/logo.png";
 import "./index.css";
 
