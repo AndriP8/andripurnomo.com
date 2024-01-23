@@ -7,7 +7,6 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 type Props = {
   params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -43,7 +42,7 @@ export default async function Page({ params }: PageProps) {
               alt={blog.cover?.alt ?? ''}
               width={700}
               height={500}
-              className="rounded-md w-full"
+              className="rounded-md w-[700px] h-[500px] object-cover mx-auto"
               priority
             />
             <div className="flex justify-center mt-2">
