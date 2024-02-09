@@ -1,4 +1,10 @@
-export default function Page() {
+import { Metadata } from 'next';
+
+export const metadata = {
+  title: 'About Me',
+} satisfies Metadata;
+
+export default async function Page() {
   return (
     <div className="space-content my-28">
       <div className="prose max-w-none">

@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const blog = await getBlogData(params.slug);
 
   return {
-    title: `${blog?.title} | Andri Purnomo`,
+    title: blog?.title,
   };
 }
 

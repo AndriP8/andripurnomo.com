@@ -2,9 +2,9 @@ import { getBlogs } from '@lib/data';
 import { CardLinkBlog } from '@ui/components';
 import { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Blog | Andri Purnomo',
-};
+export const metadata = {
+  title: 'Blog',
+} satisfies Metadata;
 
 export default async function Page() {
   const blogs = await getBlogs();
