@@ -1,0 +1,117 @@
+---
+title: What is server component
+cover:
+  resource: cover/resource.jpg
+  owner: Nubelson Fernandes
+  ownerLink: https://unsplash.com/@nublson
+  alt: someone in front of a laptop with a code screen display
+timeToRead: 3
+createdAt: '2024-03-05'
+---
+React teams introduced a new application architecture called React Server Component(RSC) that can run on the server rather than on the client, this can solve some problems like:
+
+- Server-side data source
+  - We can get data sources directly to the file system or our server which solves the waterfall problem in the client, imagine you should fetch the Product first and fetch the Product detail to see details.
+- Bundle size
+  - Because RSC is ready from the server and never downloads any dependencies to the client, it will have no impact on the bundle size.
+- Code splitting
+  - We can Improve the performance of web applications by loading only the necessary code without manually importing components with [lazy](https://react.dev/reference/react/lazy).
+
+### What's the difference with SSR
+
+If SSR performs the initial HTML for a page, with RSC React team introduces a new way to move part of our code to the server.
+
+- How does react combine server components with other components(client)?
+
+The result from RSC is a format like JSON called RSC payload to represent a tree from a component
+
+```json
+1:I{"id":"./src/SearchField.js","chunks":["client2"],"name":""}
+2:I{"id":"./src/EditButton.js","chunks":["client0"],"name":""}
+3:"$Sreact.suspense"
+0:["$","div",null,{"className":"main","children":[["$","section",null,{"className":"col sidebar","children":[["$","section",null,{"className":"sidebar-header","children":[["$","img",null,{"className":"logo","src":"logo.svg","width":"22px","height":"20px","alt":"","role":"presentation"}],["$","strong",null,{"children":"React Notes"}]]}],["$","section",null,{"className":"sidebar-menu","role":"menubar","children":[["$","$L1",null,{}],["$","$L2",null,{"noteId":null,"children":"New"}]]}],["$","nav",null,{"children":["$","$3",null,{"fallback":["$","div",null,{"children":["$","ul",null,{"className":"notes-list skeleton-container","children":[["$","li",null,{"className":"v-stack","children":["$","div",null,{"className":"sidebar-note-list-item skeleton","style":{"height":"5em"}}]}],["$","li",null,{"className":"v-stack","children":["$","div",null,{"className":"sidebar-note-list-item skeleton","style":{"height":"5em"}}]}],["$","li",null,{"className":"v-stack","children":["$","div",null,{"className":"sidebar-note-list-item skeleton","style":{"height":"5em"}}]}]]}]}],"children":"$L4"}]}]]}],["$","section","null",{"className":"col note-viewer","children":["$","$3",null,{"fallback":["$","div",null,{"className":"note skeleton-container","role":"progressbar","aria-busy":"true","children":[["$","div",null,{"className":"note-header","children":[["$","div",null,{"className":"note-title skeleton","style":{"height":"3rem","width":"65%","marginInline":"12px 1em"}}],["$","div",null,{"className":"skeleton skeleton--button","style":{"width":"8em","height":"2.5em"}}]]}],["$","div",null,{"className":"note-preview","children":[["$","div",null,{"className":"skeleton v-stack","style":{"height":"1.5em"}}],["$","div",null,{"className":"skeleton v-stack","style":{"height":"1.5em"}}],["$","div",null,{"className":"skeleton v-stack","style":{"height":"1.5em"}}],["$","div",null,{"className":"skeleton v-stack","style":{"height":"1.5em"}}],["$","div",null,{"className":"skeleton v-stack","style":{"height":"1.5em"}}]]}]]}],"children":"$L5"}]}]]}]
+5:["$","div",null,{"className":"note--empty-state","children":["$","span",null,{"className":"note-text--empty-state","children":"Click a note on the left to view something! 🥺"}]}]
+6:I{"id":"./src/SidebarNoteContent.js","chunks":["client3"],"name":""}
+4:["$","ul",null,{"className":"notes-list","children":[["$","li","5",{"children":["$","$L6",null,{"id":5,"title":"Untitlee","expandedChildren":["$","p",null,{"className":"sidebar-note-excerpt","children":"test"}],"children":["$","header",null,{"className":"sidebar-note-header","children":[["$","strong",null,{"children":"Untitlee"}],["$","small",null,{"children":"1/9/24"}]]}]}]}],...rest of rsc payload]
+
+```
+
+The Code above is result from the main page in an example [demo](https://github.com/reactjs/server-components-demo) from react team, and we can use [rsc-parser](https://rsc-parser.vercel.app/) tools to parse that result.
+
+Let's break down that result line by line
+
+1. Client component from component `SearchField`
+1. Client component from component `EditButton`
+1. React Suspense
+1. Server component with `div` wrapper
+   1. When we see the result, there is a value with the prefix `$L1`, that is an entry point where the client component should be combined in a tree.
+
+### How we use RSC
+
+The React server component has been shipped to the Nextjs App router and by default, Next.js uses the React Server Component.
+This is a simple example of a React Server Component
+
+```jsx
+import { sql } from '@vercel/postgres';
+
+async function fetchUsers() {
+  try {
+    return sql`SELECT * FROM users`;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the latest invoices.');
+  }
+}
+
+async function Page() {
+	const users = await fetchUsers()
+
+	 return (
+    <ul>
+      {users.map((user) => (
+        <li>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+For those who are familiar with React, the code above looks strange, because we can retrieve data from the database in a React component, which is usually done on the server.
+
+So what if the time needed to retrieve data from the database is long (for example 5 seconds)? Will our component wait 5 seconds until it finishes rendering in the browser? Yes, because what happens behind the scenes is fetching data on the server, rendering HTML, and the code will be sent to the client, this process is sequential and blocking. We can solve this problem by streaming.
+
+### What is Streaming
+
+Streaming allows you to break down the page's HTML into smaller chunks and progressively send those chunks from the server to the client. With streaming we can display parts of the page as quickly as possible without waiting for the data retrieval process.
+
+This is a simple example of Streaming
+
+```jsx
+import {Suspense} from 'react';
+
+async function Products() {
+  const data = await getProduct() // fetch data product and imagine take 5 seconds
+  return (
+    // mapping data product
+  )
+}
+
+function Page() {
+  return (
+    <div>
+			<h1>List of product</h1>
+      <Suspense fallback={<p>Loading or Skeleton</p>}>
+        <Products />
+      </Suspense>
+    </div>
+  )
+}
+
+```
+
+All elements in the `Page` component will be rendered as quickly as possible in the browser without waiting 5 seconds for the data call to complete and will instead display `<p>Loading or Skeleton</p>` while waiting for the `Products` component to complete.
+
+### Disadvantage RSC
+
+Because RSC runs on the server, we cannot use code that only runs in the browser, such as DOM manipulation (useRef), client-side web API (local storage), Use State and Lifecycle Effects.
