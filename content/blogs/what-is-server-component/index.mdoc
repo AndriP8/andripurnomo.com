@@ -44,12 +44,11 @@ Let's break down that result line by line
 1. Client component from component `EditButton`
 1. React Suspense
 1. Server component with `div` wrapper
-   1. When we see the result, there is a value with the prefix `$L1`, that is an entry point where the client component should be combined in a tree.
+   - When we see the result, there is a value with the prefix `$L1`, that is an entry point where the client component should be combined in a tree.
 
 ### How we use RSC
 
-The React server component has been shipped to the Nextjs App router and by default, Next.js uses the React Server Component.
-This is a simple example of a React Server Component
+The React server component has been shipped to the Nextjs App router and by default, Next.js uses the React Server Component. This is a simple example of a React Server Component
 
 ```jsx
 import { sql } from '@vercel/postgres';
