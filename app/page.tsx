@@ -1,6 +1,27 @@
 import { getBlogs } from '@lib/data';
 import { CardLinkBlog } from '@ui/components';
+import { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata = {
+  description:
+    "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
+  keywords: ['Frontend Engineer', 'Frontend blogs', 'Frontend articles'],
+  authors: [{ name: 'Andri Purnomo' }],
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'Andri Purnomo',
+    description:
+      "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
+  },
+  twitter: {
+    title: 'Andri Purnomo',
+    description:
+      "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
+  },
+} satisfies Metadata;
 
 export default async function Page() {
   const blogs = await getBlogs(3);

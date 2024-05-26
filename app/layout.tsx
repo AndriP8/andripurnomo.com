@@ -5,6 +5,7 @@ import { Metadata } from 'next';
 import { Footer, Navbar } from './ui';
 
 export const metadata = {
+  metadataBase: new URL('https://www.andripurnomo.com'),
   title: {
     template: '%s | Andri Purnomo',
     default: 'Andri Purnomo',
