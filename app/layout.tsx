@@ -1,17 +1,5 @@
 import '../styles/globals.css';
 
-import { Metadata } from 'next';
-
-import { Footer, Navbar } from './ui';
-
-export const metadata = {
-  metadataBase: new URL('https://www.andripurnomo.com'),
-  title: {
-    template: '%s | Andri Purnomo',
-    default: 'Andri Purnomo',
-  },
-} satisfies Metadata;
-
 export default function RootLayout({
   children,
 }: {
@@ -19,11 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Navbar />
-        {children}
-        <Footer />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
