@@ -6,20 +6,32 @@ import Link from 'next/link';
 export const metadata = {
   description:
     "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
-  keywords: ['Frontend Engineer', 'Frontend blogs', 'Frontend articles'],
+  keywords: [
+    'Andri Purnomo',
+    'Frontend Engineer',
+    'Frontend blogs',
+    'Frontend articles',
+  ],
   authors: [{ name: 'Andri Purnomo' }],
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'Andri Purnomo',
+    siteName: 'Andri Purnomo',
     description:
       "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
+    url: 'https://www.andripurnomo.com',
+    images:
+      'https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg',
   },
   twitter: {
     title: 'Andri Purnomo',
     description:
       "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
+    site: 'https://www.andripurnomo.com',
+    images:
+      'https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg',
   },
 } satisfies Metadata;
 
