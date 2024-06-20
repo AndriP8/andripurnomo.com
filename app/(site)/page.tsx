@@ -16,6 +16,26 @@ export const metadata = {
   alternates: {
     canonical: '/',
   },
+  icons: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      url: '/images/favicons/16x16.png',
+      sizes: '16x16',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      url: '/images/favicons/32x32.png',
+      sizes: '32x32',
+    },
+    {
+      rel: 'apple-touch-icon',
+      url: '/images/favicons/16x16.png.png',
+      sizes: '180x180',
+    },
+  ],
+
   openGraph: {
     title: 'Andri Purnomo',
     siteName: 'Andri Purnomo',
