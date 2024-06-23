@@ -1,0 +1,288 @@
+---
+title: How Tanstack Query handle data in a request
+cover:
+  resource: cover/resource.jpg
+  owner: Square Films
+  ownerLink: https://unsplash.com/@squarefilms
+  alt: Man with hard hat operating drill press
+timeToRead: 7
+createdAt: '2024-06-23'
+---
+Tanstack Query is a popular library for managing asynchronous data fetching, caching, and synchronization in web
+applications. It is particularly useful with frameworks like React, Solid, Vue, Svelte, and Angular. This library
+simplifies data management by offering robust solutions for stale data, caching strategies, background synchronization,
+and query deduplication. With Tanstack Query, developers can enhance application performance and resilience while
+reducing the boilerplate code needed for handling server state, making it an essential tool for both simple and complex
+projects.
+
+Before we dive deeper, there are several important parts we need to know first.
+
+- QueryClient
+
+This is the starting point for React Query, which is to manage the default options, Cache (Query Cache), and use it as a
+value from the `QueryClientProvider` context.
+
+```javascript
+import { QueryClient } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  )
+}
+```
+
+- Query
+
+This is the core logic, such as handle fetching, where data/state is stored, manipulating data/state with reducer
+pattern, and even setting window focus.
+
+- QueryCache
+
+QueryCache aims to manipulate Queries, e.g. add, get, remove, build(create and add query based on options).
+
+- QueryObserver
+
+QueryObserver is the connection between our component and the Query.
+
+## What happens behind the scenes when fetching and storing data
+
+![Tanstack query diagram flow](https://res.cloudinary.com/dutqd1aca/image/upload/v1719110960/blogs/Tanstack%20Query/ysip8hrmaka3dxjgolbr.png)
+
+I will explain below only code related to the main topic, so there will be a lot of code summarized including the types.
+
+- Initial data
+
+Before fetching, we get default options from the `QueryClient` context and create an Observer instance which is
+[initiated
+lazily](https://kentcdodds.com/blog/use-state-lazy-initialization-and-function-updates#usestate-lazy-initialization)
+into the state to get initial results such as `data`, `isLoading`, `isError`, etc.
+
+```java
+// useBaseQuery.ts
+import * as React from 'react'
+
+export function useBaseQuery(options, Observer, queryClient?) {
+  const client = useQueryClient(queryClient)
+	const defaultedOptions = client.defaultQueryOptions(options)
+	
+	const [observer] = React.useState(
+    () =>
+      new Observer(client, defaultedOptions),
+  )
+  const result = observer.getOptimisticResult(defaultedOptions)
+}
+```
+
+- Subscription
+
+This is where the fetching process begins, starting from [subscribing to the external
+store](https://react.dev/reference/react/useSyncExternalStore) to synchronize the data inside. The purpose of the
+subscription is to notify if a query is being executed and to check whether fetching is needed or just updating the
+results.
+
+```javascript
+// useBaseQuery.ts
+import * as React from 'react'
+import {  notifyManager } from '@tanstack/query-core'
+
+export function useBaseQuery(options, Observer, queryClient) {
+	const defaultedOptions = client.defaultQueryOptions(options)
+	
+	const [observer] = React.useState(
+    () =>
+      new Observer(client, defaultedOptions),
+  )
+  const result = observer.getOptimisticResult(defaultedOptions)
+  
+    React.useSyncExternalStore(
+	    React.useCallback(
+	      (onStoreChange) => {
+	        const unsubscribe = observer.subscribe(notifyManager.batchCalls(onStoreChange))
+	
+	        // Update result to make sure we did not miss any query updates
+	        // between creating the observer and subscribing to it.
+	        observer.updateResult()
+	
+	        return unsubscribe
+	      },
+	      [observer, isRestoring],
+    ),
+    () => observer.getCurrentResult(),
+    () => observer.getCurrentResult(),
+  )
+}
+
+// QueryObserver.ts
+subscribe(listener: TListener): () => void {
+    this.listeners.add(listener)
+
+    this.onSubscribe()
+  }
+ 
+protected onSubscribe(): void {
+    if (this.listeners.size === 1) {
+      this.#currentQuery.addObserver(this)
+
+      if (shouldFetchOnMount(this.#currentQuery, this.options)) {
+        this.#executeFetch()
+      } else {
+        this.updateResult()
+      }
+  }
+```
+
+- Fetching process
+
+During the fetching process, it will call the `fetch` method on the `Query` which includes promise management.
+
+```javascript
+// QueryObserver.ts
+#executeFetch(fetchOptions) {
+  // Make sure we reference the latest query as the current one might have been removed
+  this.#updateQuery()
+
+  // Fetch
+  let promise = this.#currentQuery.fetch(this.options,fetchOptions)
+
+  return promise
+}
+
+// Query.ts
+fetch(options,fetchOptions) {
+  const abortController = new AbortController()
+
+  // Create fetch function
+  const fetchFn = () => {
+    return this.options.queryFn()
+  }
+
+  // Trigger behavior hook
+  const context = {
+    fetchOptions,
+    options: this.options,
+    queryKey: this.queryKey,
+    state: this.state,
+    fetchFn,
+  }
+
+  // Set to fetching state if not already in it
+  if (
+    this.state.fetchStatus === 'idle' ||
+    this.state.fetchMeta !== context.fetchOptions?.meta
+  ) {
+    this.#dispatch({ type: 'fetch', meta: context.fetchOptions?.meta })
+  }
+
+  // Try to fetch the data
+  this.#retryer = createRetryer({
+    fn: context.fetchFn,
+    abort: abortController.abort.bind(abortController),
+    onSuccess: (data) => {
+      this.setData(data)
+    }
+  })
+
+  return this.#retryer.promise
+}
+```
+
+- Mutating data
+
+The process of mutating data into `query.state` is done by comparing old data and new data thoroughly, and there is a
+reducer pattern to handle the data when the fetching process is successful.
+
+```javascript
+// Query.ts
+setData(newData,options) {
+  const data = replaceData(this.state.data, newData, this.options)
+
+  // Set data and mark it as cached
+  this.#dispatch({
+    data,
+    type: 'success',
+    dataUpdatedAt: options?.updatedAt,
+    manual: options?.manual,
+  })
+
+  return data
+}
+
+ #dispatch(action) {
+  const reducer = (state) => {
+    switch (action.type) {
+      case 'success':
+        return {
+          ...state,
+          data: action.data,
+          dataUpdateCount: state.dataUpdateCount + 1,
+          dataUpdatedAt: action.dataUpdatedAt ?? Date.now(),
+          error: null,
+          isInvalidated: false,
+          status: 'success',
+          ...(!action.manual && {
+            fetchStatus: 'idle',
+            fetchFailureCount: 0,
+            fetchFailureReason: null,
+          }),
+        }
+    }
+  }
+
+  this.state = reducer(this.state)
+}
+```
+
+- Return data to the component
+
+After the data mutation process is complete, the data will now be returned to the component via the observer.
+
+```javascript
+// useBaseQuery.ts
+import * as React from 'react'
+import {  notifyManager } from '@tanstack/query-core'
+
+export function useBaseQuery(options, Observer, queryClient) {
+	const defaultedOptions = client.defaultQueryOptions(options)
+	
+	const [observer] = React.useState(
+    () =>
+      new Observer(client, defaultedOptions),
+  )
+  
+  // 1. Create initial result
+  const result = observer.getOptimisticResult(defaultedOptions)
+  
+  // 2. Subcribe to execute fetch and mutate state / data
+    React.useSyncExternalStore(
+	    React.useCallback(
+	      (onStoreChange) => {
+	        const unsubscribe = observer.subscribe(notifyManager.batchCalls(onStoreChange))
+	
+	        // Update result to make sure we did not miss any query updates
+	        // between creating the observer and subscribing to it.
+	        observer.updateResult()
+	
+	        return unsubscribe
+	      },
+	      [observer, isRestoring],
+    ),
+    () => observer.getCurrentResult(),
+    () => observer.getCurrentResult(),
+  )
+  
+  // 3. Send state/data to the component
+  return result
+}
+```
+
+## Conclusion
+
+From the explanation above we can know how the library works, for example how Tanstack Query performs data fetching and
+handles the data. This will change our mental model so that we not only use or understand how to use a library, but also
+how it works behind the scenes and it will increase our knowledge because we see the code styles of various
+collaborators.
