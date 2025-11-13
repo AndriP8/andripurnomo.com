@@ -1,11 +1,13 @@
 import { DocumentRenderer } from '@keystatic/core/renderer';
 import { getBlogData, getBlogs, getBlogSlugs } from '@lib/data';
 import { formatDate } from '@lib/utils';
+import { extractHeadings } from '@lib/utils/extractHeadings';
 import {
   AuthorBio,
   ReadingProgressBar,
   RelatedPosts,
   ShareButtons,
+  TableOfContents,
   TwitterEmbed,
   YouTubeEmbed,
 } from '@ui/components';
@@ -60,6 +62,10 @@ export default async function Page({ params }: PageProps) {
     .filter((post) => post.slug !== params.slug)
     .slice(0, 3);
 
+  // Extract headings for Table of Contents
+  const blogContent = blog.content ? await blog.content() : [];
+  const headings = extractHeadings(blogContent);
+
   const currentUrl =
     typeof window !== 'undefined'
       ? window.location.href
@@ -112,7 +118,17 @@ export default async function Page({ params }: PageProps) {
 
       {/* Main Content */}
       <main className="px-[5%] pb-20">
-        <div className="max-w-[750px] mx-auto">
+        <div className="max-w-[1200px] mx-auto">
+          <div className={headings.length > 0 ? "grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-16 items-start" : "max-w-[750px] mx-auto"}>
+            {/* Table of Contents - Desktop (only if headings exist) */}
+            {headings.length > 0 && (
+              <aside className="hidden lg:block">
+                <TableOfContents headings={headings} />
+              </aside>
+            )}
+
+            {/* Main Article */}
+            <div>
           {/* Cover Image */}
           {blog.cover && (
             <div className="mb-16">
@@ -142,9 +158,42 @@ export default async function Page({ params }: PageProps) {
 
           {/* Article Content */}
           <article className="prose prose-invert max-w-none prose-headings:text-[#e0e0e0] prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6 prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4 prose-p:text-[#e0e0e0]/90 prose-p:text-lg prose-p:leading-relaxed prose-p:mb-6 prose-a:text-[#00ff88] prose-a:no-underline hover:prose-a:underline prose-strong:text-[#e0e0e0] prose-strong:font-semibold prose-code:text-[#00ff88] prose-code:bg-[#1a1a1a] prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-pre:bg-[#1a1a1a] prose-pre:border prose-pre:border-[rgba(0,255,136,0.2)] prose-pre:rounded-xl prose-ul:text-[#e0e0e0]/90 prose-ol:text-[#e0e0e0]/90 prose-li:text-lg prose-li:leading-relaxed prose-li:mb-3">
-            {blog.content ? (
+            {blogContent.length > 0 ? (
               <DocumentRenderer
-                document={await blog.content()}
+                document={blogContent}
+                renderers={{
+                  block: {
+                    heading: ({ level, children, textAlign }) => {
+                      const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
+
+                      // Extract text from children for ID matching
+                      let text = '';
+                      if (children) {
+                        if (Array.isArray(children)) {
+                          text = children
+                            .map((child) =>
+                              typeof child === 'string' ? child : ''
+                            )
+                            .join('');
+                        } else if (typeof children === 'string') {
+                          text = children;
+                        }
+                      }
+
+                      const heading = headings.find((h) => h.text === text);
+                      const id = heading ? heading.id : undefined;
+
+                      return (
+                        <HeadingTag
+                          id={id}
+                          style={{ textAlign }}
+                        >
+                          {children}
+                        </HeadingTag>
+                      );
+                    },
+                  },
+                }}
                 componentBlocks={{
                   youtubeEmbed: (props) => (
                     <YouTubeEmbed youtubeLink={props.youtubeLink} />
@@ -181,6 +230,8 @@ export default async function Page({ params }: PageProps) {
 
           {/* Author Bio */}
           <AuthorBio />
+            </div>
+          </div>
         </div>
       </main>
     </>
