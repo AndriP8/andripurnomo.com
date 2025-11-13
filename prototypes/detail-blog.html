@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Scalable Chat Systems: Lessons from Production - Andri Purnomo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0a0a0a;
+            --accent: #00ff88;
+            --accent-alt: #7b3ff2;
+            --text-light: #e0e0e0;
+            --text-muted: #888;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --code-bg: #1a1a1a;
+            --code-border: rgba(0, 255, 136, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 20px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 61px;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--accent);
+            z-index: 999;
+            transition: width 0.2s ease;
+        }
+
+        /* Hero Section */
+        .blog-hero {
+            margin-top: 100px;
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.3;
+            }
+        }
+
+        .blog-hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .blog-category {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 25px;
+            color: var(--accent);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .blog-title {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--text-light) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+        }
+
+        /* Table of Contents */
+        .toc-container {
+            position: sticky;
+            top: 100px;
+            margin-bottom: 40px;
+        }
+
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .toc-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-item {
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .toc-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: rgba(0, 255, 136, 0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toc-item.active::before {
+            background: var(--accent);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .toc-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .toc-link:hover {
+            color: var(--accent);
+        }
+
+        .toc-item.active .toc-link {
+            color: var(--text-light);
+        }
+
+        /* Main Content Layout */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        /* Article Content */
+        .article-content {
+            max-width: 750px;
+        }
+
+        .article-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 60px 0 30px 0;
+            color: var(--text-light);
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .article-content h2::before {
+            content: '#';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        .article-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 20px 0;
+            color: var(--text-light);
+        }
+
+        .article-content p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: rgba(224, 224, 224, 0.9);
+        }
+
+        .article-content ul,
+        .article-content ol {
+            margin: 20px 0 30px 30px;
+        }
+
+        .article-content li {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            color: rgba(224, 224, 224, 0.9);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 12px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--code-border);
+        }
+
+        .code-lang {
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        .copy-btn.copied {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        /* Inline code */
+        .article-content p code {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: var(--accent);
+            font-size: 16px;
+        }
+
+        /* Syntax Highlighting */
+        .token-keyword {
+            color: #ff79c6;
+        }
+
+        .token-string {
+            color: #f1fa8c;
+        }
+
+        .token-function {
+            color: #50fa7b;
+        }
+
+        .token-comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+
+        .token-number {
+            color: #bd93f9;
+        }
+
+        .token-operator {
+            color: #ff79c6;
+        }
+
+        .token-class {
+            color: #8be9fd;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .callout.warning {
+            border-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .callout.warning .callout-title {
+            color: #ff6b35;
+        }
+
+        /* Share Section */
+        .share-section {
+            margin: 80px 0 40px 0;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .share-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Author Bio */
+        .author-bio {
+            margin: 60px 0;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(123, 63, 242, 0.05) 100%);
+            border-radius: 20px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .author-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+            flex-shrink: 0;
+        }
+
+        .author-info h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .author-info p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .author-social {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            color: var(--text-light);
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--accent);
+        }
+
+        /* Related Posts */
+        .related-posts {
+            margin: 80px 0;
+        }
+
+        .related-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .related-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .related-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .related-category {
+            color: var(--accent);
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .related-card h3 {
+            color: var(--text-light);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .related-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 100px;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 968px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .toc-container {
+                position: static;
+                margin-bottom: 40px;
+            }
+
+            .blog-meta {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .author-bio {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .share-buttons {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">AP</a>
+            <ul class="nav-links">
+                <li><a href="/#home">Home</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#projects">Projects</a></li>
+                <li><a href="/#blog">Blog</a></li>
+                <li><a href="/#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Hero Section -->
+    <header class="blog-hero">
+        <div class="blog-hero-content">
+            <span class="blog-category">System Design</span>
+            <h1 class="blog-title">Building Scalable Chat Systems: Lessons from Production</h1>
+            <div class="blog-meta">
+                <div class="meta-item">
+                    <div class="author-avatar"></div>
+                    <span>Andri Purnomo</span>
+                </div>
+                <div class="meta-item">
+                    <span>November 8, 2024</span>
+                </div>
+                <div class="meta-item">
+                    <span>12 min read</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-wrapper">
+        <!-- Table of Contents -->
+        <aside class="toc-container">
+            <div class="toc">
+                <h3 class="toc-title">Table of Contents</h3>
+                <ul class="toc-list">
+                    <li class="toc-item active">
+                        <a href="#introduction" class="toc-link">Introduction</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#architecture" class="toc-link">Architecture Overview</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#websockets" class="toc-link">WebSocket Implementation</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#offline" class="toc-link">Offline Support</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#scaling" class="toc-link">Scaling Strategies</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#lessons" class="toc-link">Key Lessons Learned</a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Article Content -->
+        <article class="article-content">
+            <section id="introduction">
+                <p>
+                    Building a real-time chat application that can handle thousands of concurrent users while
+                    maintaining
+                    sub-second message delivery is one of the most challenging projects I've tackled. Over the past
+                    year,
+                    our team has built and scaled a chat system from zero to 50,000+ daily active users, and I want to
+                    share the technical decisions and hard-won lessons from this journey.
+                </p>
+
+                <p>
+                    The requirements were ambitious: real-time messaging with <code>< 100ms</code> latency, offline
+                    support with
+                    automatic synchronization, cross-tab synchronization, and the ability to handle 10,000+ concurrent
+                    WebSocket connections per server. Here's how we built it.
+                </p>
+            </section>
+
+            <section id="architecture">
+                <h2>Architecture Overview</h2>
+
+                <p>
+                    Our architecture evolved significantly as we scaled. We started with a simple Node.js server using
+                    Socket.io and ended up with a distributed system using Redis Pub/Sub, message queuing, and
+                    horizontal
+                    scaling across multiple regions.
+                </p>
+
+                <div class="callout">
+                    <div class="callout-title">
+                        💡 Key Insight
+                    </div>
+                    <p>
+                        Don't over-engineer from day one. We started simple and added complexity only when we hit actual
+                        bottlenecks. This saved us months of unnecessary work.
+                    </p>
+                </div>
+
+                <h3>Core Components</h3>
+
+                <ul>
+                    <li><strong>WebSocket Gateway:</strong> Handles all real-time connections using Socket.io</li>
+                    <li><strong>Message Queue:</strong> RabbitMQ for reliable message delivery and processing</li>
+                    <li><strong>Cache Layer:</strong> Redis for session management and temporary message storage</li>
+                    <li><strong>Database:</strong> PostgreSQL for persistent storage with read replicas</li>
+                    <li><strong>CDN:</strong> CloudFront for static assets and media files</li>
+                </ul>
+            </section>
+
+            <section id="websockets">
+                <h2>WebSocket Implementation</h2>
+
+                <p>
+                    The WebSocket layer is the heart of any real-time chat system. We chose Socket.io for its excellent
+                    fallback support and built-in reconnection logic, but we had to customize it heavily for our needs.
+                </p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="token-comment">// WebSocket connection manager with exponential backoff</span>
+<span class="token-keyword">class</span> <span class="token-class">ConnectionManager</span> {
+  <span class="token-keyword">constructor</span>() {
+    <span class="token-keyword">this</span>.socket = <span class="token-keyword">null</span>;
+    <span class="token-keyword">this</span>.reconnectAttempts = <span class="token-number">0</span>;
+    <span class="token-keyword">this</span>.maxReconnectDelay = <span class="token-number">30000</span>;
+    <span class="token-keyword">this</span>.messageQueue = [];
+  }
+
+  <span class="token-keyword">async</span> <span class="token-function">connect</span>() {
+    <span class="token-keyword">this</span>.socket = <span class="token-function">io</span>(<span class="token-string">'wss://chat.example.com'</span>, {
+      transports: [<span class="token-string">'websocket'</span>],
+      reconnection: <span class="token-keyword">false</span>, <span class="token-comment">// We handle this manually</span>
+      auth: {
+        token: <span class="token-keyword">await</span> <span class="token-function">getAuthToken</span>()
+      }
+    });
+
+    <span class="token-keyword">this</span>.socket.<span class="token-function">on</span>(<span class="token-string">'connect'</span>, () => {
+      <span class="token-keyword">this</span>.reconnectAttempts = <span class="token-number">0</span>;
+      <span class="token-keyword">this</span>.<span class="token-function">flushMessageQueue</span>();
+    });
+
+    <span class="token-keyword">this</span>.socket.<span class="token-function">on</span>(<span class="token-string">'disconnect'</span>, () => {
+      <span class="token-keyword">this</span>.<span class="token-function">scheduleReconnect</span>();
+    });
+  }
+
+  <span class="token-function">sendMessage</span>(message) {
+    <span class="token-keyword">if</span> (<span class="token-keyword">this</span>.socket?.connected) {
+      <span class="token-keyword">this</span>.socket.<span class="token-function">emit</span>(<span class="token-string">'message'</span>, message);
+    } <span class="token-keyword">else</span> {
+      <span class="token-keyword">this</span>.messageQueue.<span class="token-function">push</span>(message);
+    }
+  }
+}</code></pre>
+                </div>
+
+                <p>
+                    One critical optimization was implementing message batching. Instead of sending each message
+                    immediately, we batch messages that arrive within a 50ms window. This reduced our server load
+                    by 40% during peak hours.
+                </p>
+
+                <div class="callout warning">
+                    <div class="callout-title">
+                        ⚠️ Common Pitfall
+                    </div>
+                    <p>
+                        Don't rely on WebSocket connections for critical state. Connections drop frequently on mobile
+                        networks. Always implement proper reconnection logic and message queuing.
+                    </p>
+                </div>
+            </section>
+
+            <section id="offline">
+                <h2>Offline Support</h2>
+
+                <p>
+                    Offline support was non-negotiable for our mobile users. We implemented a sophisticated sync
+                    mechanism using IndexedDB for local storage and a custom conflict resolution strategy.
+                </p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">TypeScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="token-keyword">interface</span> <span class="token-class">Message</span> {
+  id: <span class="token-keyword">string</span>;
+  localId: <span class="token-keyword">string</span>;
+  content: <span class="token-keyword">string</span>;
+  timestamp: <span class="token-keyword">number</span>;
+  syncStatus: <span class="token-string">'pending'</span> | <span class="token-string">'synced'</span> | <span class="token-string">'failed'</span>;
+}
+
+<span class="token-keyword">class</span> <span class="token-class">OfflineSync</span> {
+  <span class="token-keyword">private</span> db: IDBDatabase;
+  <span class="token-keyword">private</span> syncQueue: Message[] = [];
+
+  <span class="token-keyword">async</span> <span class="token-function">queueMessage</span>(message: Message): <span class="token-keyword">Promise</span>&lt;<span class="token-keyword">void</span>&gt; {
+    <span class="token-comment">// Store in IndexedDB</span>
+    <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">storeLocally</span>(message);
+    
+    <span class="token-comment">// Attempt immediate sync if online</span>
+    <span class="token-keyword">if</span> (navigator.onLine) {
+      <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">syncMessage</span>(message);
+    } <span class="token-keyword">else</span> {
+      <span class="token-keyword">this</span>.syncQueue.<span class="token-function">push</span>(message);
+    }
+  }
+
+  <span class="token-keyword">async</span> <span class="token-function">syncAllPending</span>(): <span class="token-keyword">Promise</span>&lt;<span class="token-keyword">void</span>&gt; {
+    <span class="token-keyword">const</span> pending = <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">getPendingMessages</span>();
+    
+    <span class="token-keyword">for</span> (<span class="token-keyword">const</span> message <span class="token-keyword">of</span> pending) {
+      <span class="token-keyword">try</span> {
+        <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">syncMessage</span>(message);
+        message.syncStatus = <span class="token-string">'synced'</span>;
+      } <span class="token-keyword">catch</span> (error) {
+        message.syncStatus = <span class="token-string">'failed'</span>;
+      }
+      <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">updateMessage</span>(message);
+    }
+  }
+}</code></pre>
+                </div>
+
+                <p>
+                    The key to reliable offline support is idempotency. Every message has a client-generated ID,
+                    allowing us to prevent duplicates when messages are retried after network failures.
+                </p>
+            </section>
+
+            <section id="scaling">
+                <h2>Scaling Strategies</h2>
+
+                <p>
+                    As we grew from hundreds to thousands of concurrent users, we had to rethink our architecture
+                    multiple times. Here are the key strategies that allowed us to scale:
+                </p>
+
+                <h3>1. Horizontal Scaling with Sticky Sessions</h3>
+                <p>
+                    We use NGINX with IP hash load balancing to ensure users consistently connect to the same
+                    WebSocket server. This simplifies state management while allowing us to add servers as needed.
+                </p>
+
+                <h3>2. Redis Pub/Sub for Cross-Server Communication</h3>
+                <p>
+                    When a user on Server A sends a message to a user on Server B, we use Redis Pub/Sub to
+                    broadcast the message across all servers. Each server subscribes to channels for its connected
+                    users.
+                </p>
+
+                <h3>3. Database Optimization</h3>
+                <ul>
+                    <li>Implemented read replicas for message history queries</li>
+                    <li>Added composite indexes on (conversation_id, timestamp)</li>
+                    <li>Partitioned messages table by month</li>
+                    <li>Cached recent messages in Redis with 5-minute TTL</li>
+                </ul>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">SQL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="token-comment">-- Partitioned message table for better performance</span>
+<span class="token-keyword">CREATE TABLE</span> messages_2024_11 <span class="token-keyword">PARTITION OF</span> messages
+<span class="token-keyword">FOR VALUES FROM</span> (<span class="token-string">'2024-11-01'</span>) <span class="token-keyword">TO</span> (<span class="token-string">'2024-12-01'</span>);
+
+<span class="token-comment">-- Optimized index for message queries</span>
+<span class="token-keyword">CREATE INDEX</span> idx_messages_conv_time 
+<span class="token-keyword">ON</span> messages_2024_11 (conversation_id, created_at <span class="token-keyword">DESC</span>)
+<span class="token-keyword">WHERE</span> deleted_at <span class="token-keyword">IS NULL</span>;</code></pre>
+                </div>
+            </section>
+
+            <section id="lessons">
+                <h2>Key Lessons Learned</h2>
+
+                <p>
+                    After a year of building and scaling this system, here are the most important lessons we learned:
+                </p>
+
+                <h3>1. Monitor Everything</h3>
+                <p>
+                    We use Datadog to track WebSocket connections, message latency, queue depth, and error rates.
+                    Setting up proper monitoring early saved us from numerous potential outages.
+                </p>
+
+                <h3>2. Plan for Mobile Networks</h3>
+                <p>
+                    Mobile users experience frequent disconnections. Implement aggressive reconnection strategies,
+                    message queuing, and make your UI clearly show connection status.
+                </p>
+
+                <h3>3. Rate Limiting is Critical</h3>
+                <p>
+                    We learned this the hard way when a bug caused a client to send 10,000 messages per second.
+                    Now we have rate limiting at multiple levels: client, WebSocket gateway, and API.
+                </p>
+
+                <h3>4. Keep Messages Small</h3>
+                <p>
+                    Large messages (images, files) should be uploaded separately to S3 with only URLs sent through
+                    the WebSocket connection. This keeps the real-time pipeline fast.
+                </p>
+
+                <div class="callout">
+                    <div class="callout-title">
+                        🚀 Performance Tip
+                    </div>
+                    <p>
+                        Implement pagination for message history. Loading 10,000 messages at once will crash most
+                        browsers. We load 50 messages initially and implement infinite scroll for history.
+                    </p>
+                </div>
+
+                <h3>5. Test Under Realistic Conditions</h3>
+                <p>
+                    Use tools like Artillery.io to simulate thousands of concurrent WebSocket connections. Test with
+                    realistic message patterns, not just connection counts.
+                </p>
+            </section>
+
+            <!-- Share Section -->
+            <div class="share-section">
+                <h3 class="share-title">Found this helpful? Share it with others!</h3>
+                <div class="share-buttons">
+                    <a href="#" class="share-btn">
+                        <span>🐦</span>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="share-btn">
+                        <span>💼</span>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="#" class="share-btn">
+                        <span>🔗</span>
+                        <span>Copy Link</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Author Bio -->
+            <div class="author-bio">
+                <div class="author-avatar-large"></div>
+                <div class="author-info">
+                    <h3>Andri Purnomo</h3>
+                    <p>
+                        Frontend Engineer passionate about building scalable, real-time applications.
+                        Currently exploring system design and WebSocket technologies.
+                    </p>
+                    <div class="author-social">
+                        <a href="#" class="social-link">GitHub</a>
+                        <a href="#" class="social-link">LinkedIn</a>
+                        <a href="#" class="social-link">Twitter</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Posts -->
+            <section class="related-posts">
+                <h2 class="related-title">Related Articles</h2>
+                <div class="related-grid">
+                    <a href="#" class="related-card">
+                        <div class="related-category">Performance</div>
+                        <h3>React Performance Optimization: Beyond React.memo</h3>
+                        <p>Practical strategies for optimizing React applications at scale.</p>
+                    </a>
+                    <a href="#" class="related-card">
+                        <div class="related-category">TypeScript</div>
+                        <h3>Advanced TypeScript Patterns</h3>
+                        <p>Exploring discriminated unions and conditional types.</p>
+                    </a>
+                    <a href="#" class="related-card">
+                        <div class="related-category">Architecture</div>
+                        <h3>Microservices vs Monoliths in 2024</h3>
+                        <p>When to choose which architecture for your next project.</p>
+                    </a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Andri Purnomo. Crafted with passion and precision.</p>
+    </footer>
+
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const height = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrolled / height) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
+
+        // Table of Contents active state
+        const sections = document.querySelectorAll('section[id]');
+        const tocItems = document.querySelectorAll('.toc-item');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tocItems.forEach(item => {
+                item.classList.remove('active');
+                const link = item.querySelector('.toc-link');
+                if (link.getAttribute('href').slice(1) === current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Copy code functionality
+        function copyCode(btn) {
+            const codeBlock = btn.closest('.code-block');
+            const code = codeBlock.querySelector('code').innerText;
+
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll for TOC links
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+
+</html>
