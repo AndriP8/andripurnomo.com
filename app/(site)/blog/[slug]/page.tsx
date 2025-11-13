@@ -1,9 +1,10 @@
 import { DocumentRenderer } from '@keystatic/core/renderer';
-import { getBlogData, getBlogSlugs } from '@lib/data';
+import { getBlogData, getBlogs, getBlogSlugs } from '@lib/data';
 import { formatDate } from '@lib/utils';
 import {
   AuthorBio,
   ReadingProgressBar,
+  RelatedPosts,
   ShareButtons,
   TwitterEmbed,
   YouTubeEmbed,
@@ -52,6 +53,12 @@ export default async function Page({ params }: PageProps) {
       </div>
     );
   }
+
+  // Get related posts (excluding current post)
+  const allBlogs = await getBlogs();
+  const relatedPosts = allBlogs
+    .filter((post) => post.slug !== params.slug)
+    .slice(0, 3);
 
   const currentUrl =
     typeof window !== 'undefined'
@@ -168,6 +175,9 @@ export default async function Page({ params }: PageProps) {
 
           {/* Share Section */}
           <ShareButtons title={blog.title} url={currentUrl} />
+
+          {/* Related Posts */}
+          <RelatedPosts posts={relatedPosts} />
 
           {/* Author Bio */}
           <AuthorBio />

@@ -8,6 +8,8 @@ export * from './FloatingShapes';
 export * from './Footer';
 export * from './Navbar';
 export * from './ReadingProgressBar';
+export * from './RelatedPosts';
 export * from './ShareButtons';
+export * from './TableOfContents';
 export * from './TweetEmbed';
 export * from './YouTubeEmbed';
