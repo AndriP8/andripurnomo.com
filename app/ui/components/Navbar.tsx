@@ -9,41 +9,53 @@ const navItemData = [
     href: '/',
   },
   {
-    title: 'Blog',
-    href: '/blog',
+    title: 'About',
+    href: '#about',
   },
   {
-    title: 'About Me',
-    href: '/about',
+    title: 'Projects',
+    href: '#projects',
+  },
+  {
+    title: 'Blog',
+    href: '#blog',
+  },
+  {
+    title: 'Contact',
+    href: '#contact',
   },
 ];
 
 export const Navbar = () => {
   const pathName = usePathname();
-  const splitedPathName = pathName?.split('/')[1];
-  const basePathName = `/${splitedPathName}`;
 
   return (
-    <div className="space-content">
-      <nav>
-        <ul className="flex items-start justify-start gap-x-6 border-b border-black py-6">
-          {navItemData.map((item) => {
-            return (
-              <li
-                key={item.title}
+    <nav className="fixed top-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
+      <ul className="flex items-center gap-8 glass rounded-full px-8 py-4">
+        {navItemData.map((item) => {
+          const isActive =
+            item.href === '/'
+              ? pathName === '/'
+              : pathName?.startsWith(item.href);
+
+          return (
+            <li key={item.title} className="list-none">
+              <Link
+                href={item.href}
                 className={twMerge(
-                  'list-none text-xl font-medium',
-                  basePathName === item.href
-                    ? 'text-black'
-                    : 'text-gray-500 hover:text-black  transition duration-200',
+                  'text-sm font-normal tracking-wide transition-all duration-300 relative group',
+                  isActive
+                    ? 'text-[#e0e0e0]'
+                    : 'text-[#e0e0e0] hover:text-[#00ff88]',
                 )}
               >
-                <Link href={item.href}>{item.title}</Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </div>
+                {item.title}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#00ff88] transition-all duration-300 group-hover:w-full" />
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 };
