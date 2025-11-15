@@ -18,8 +18,8 @@ To make a website more beautiful, we need CSS files to set colors, typography, l
 
 We need two package
 
-- `style-loader`&nbsp;used for adding CSS files into components.
-- `css-loader`&nbsp;used to make components can read CSS files
+- `style-loader` used for adding CSS files into components.
+- `css-loader` used to make components can read CSS files
 
 ```JavaScript
 pnpm install --save-dev style-loader css-loader
@@ -36,8 +36,7 @@ pnpm install --save-dev style-loader css-loader
 }
 ```
 
-- Import file&nbsp;`index.css`&nbsp;kedalam komponen utama yaitu&nbsp;`index.jsx`&nbsp;agar komponent tersebut dapat menerapkan styling yang sudah ada.
-- Import file&nbsp;`index.css`&nbsp;to the root component&nbsp;`index.jsx`
+- Import file `index.css` to the root component `index.jsx`
 
 ```javascript
 import React from "react";
@@ -61,7 +60,7 @@ root.render(<App />);
 
 ## Configuration assets on Webpack
 
-```java
+```javascript
 const path = require("path");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
@@ -109,14 +108,13 @@ module.exports = {
 };
 ```
 
-- `test`&nbsp;allowed file extensions
-- `type`&nbsp;what module should use
-- `generator`&nbsp;akan menghasilkan sebuah file kedalam sebuah folder yang sudah di tentukan.
-- `generator`&nbsp;will generate a result of the file and will be in the defined path
+- `test` allowed file extensions
+- `type` what module should use
+- `generator` will generate a result of the file and will be in the defined path
 
 After adding that configuration, we should add an image to the component and run `pnpm build` to test whether our image was successful, and if successful, it will automatically create a new image file in path `build/assets/img/nama_file_hash.png`
 
-```java
+```javascript
 import React from "react";
 import reactDom from 'react-dom/client';
 import Logo from "./assets/logo.png";
@@ -143,6 +141,6 @@ The last step is should run `pnpm start` to check are our applied styling and as
 
 In this stage, we can use React like what React templates do, we can add styling and assets to each page on the website.
 
-[Setup React from scratch part 1](https://andripurnomo.vercel.app/blog/setup-react-from-scratch)
+[Setup React from scratch part 1](https://andripurnomo.com/blog/setup-react-from-scratch)
 
-You can access the code in this&nbsp;[**repository**](https://github.com/AndriP8/React-from-scratch)
+You can access the code in this [**repository**](https://github.com/AndriP8/React-from-scratch)
