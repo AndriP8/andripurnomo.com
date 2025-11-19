@@ -8,7 +8,7 @@ export const ContactSection = () => {
   return (
     <section id="contact" className="section-padding text-center">
       <div className="max-w-[800px] mx-auto">
-        <h2 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-8">
+        <h2 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-8 leading-normal">
           Let&apos;s Build Something Amazing
         </h2>
         <p className="text-lg text-text-muted leading-relaxed mb-10">
