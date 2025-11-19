@@ -98,4 +98,47 @@
     color: transparent;
     -webkit-text-stroke: 2px #e0e0e0;
   }
+
+  /* Blog content prose dark theme styling */
+  .prose-blog {
+    @apply text-text-light;
+  }
+
+  .prose-blog h1,
+  .prose-blog h2,
+  .prose-blog h3,
+  .prose-blog h4,
+  .prose-blog h5,
+  .prose-blog h6 {
+    @apply text-text-light font-bold;
+  }
+
+  .prose-blog a {
+    @apply text-accent hover:text-accent-alt transition-colors duration-200;
+  }
+
+  .prose-blog strong {
+    @apply text-text-light font-bold;
+  }
+
+  .prose-blog code {
+    @apply bg-code-bg text-accent px-1.5 py-0.5 rounded;
+  }
+
+  .prose-blog pre {
+    @apply bg-code-bg border border-code-border rounded-lg;
+  }
+
+  .prose-blog blockquote {
+    @apply border-l-4 border-accent bg-white/[0.03] text-text-muted italic;
+  }
+
+  .prose-blog ul,
+  .prose-blog ol {
+    @apply text-text-light;
+  }
+
+  .prose-blog li {
+    @apply text-text-light;
+  }
 }
