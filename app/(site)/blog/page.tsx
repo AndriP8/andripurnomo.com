@@ -11,9 +11,9 @@ export default async function Page() {
   return (
     <div className="space-content my-28">
       <div className="max-w-[1200px] mx-auto">
-        <h1 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-4 relative inline-block">
+        <h1 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-4 relative inline-block pb-6">
           All Articles
-          <span className="absolute bottom-[-10px] left-0 w-[60px] h-1 bg-accent" />
+          <span className="absolute bottom-0 left-0 w-[60px] h-1 bg-accent" />
         </h1>
         <p className="text-lg text-text-muted mb-16">
           Exploring code, design, and everything in between

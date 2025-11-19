@@ -33,7 +33,7 @@ export const Hero = () => {
       />
 
       <div className="w-full max-w-[1400px] mx-auto relative z-10">
-        <h1 className="font-black mb-8 leading-[0.9]">
+        <h1 className="font-black mb-8 leading-[1.1] overflow-visible">
           <span className="block text-[clamp(60px,10vw,140px)] opacity-0 animate-slide-in">
             Creative
           </span>

@@ -23,10 +23,10 @@ export const BlogSection = ({ blogs }: BlogSectionProps) => {
       }}
     >
       <div className="max-w-[1200px] mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-4 inline-block relative">
+        <div className="mb-16">
+          <h2 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-4 inline-block relative pb-6">
             Latest Thoughts
-            <span className="absolute bottom-[-10px] left-1/2 -translate-x-1/2 w-[60px] h-1 bg-accent" />
+            <span className="absolute bottom-0 left-0 w-[60px] h-1 bg-accent" />
           </h2>
           <p className="text-lg text-text-muted mt-8">
             Exploring code, design, and everything in between

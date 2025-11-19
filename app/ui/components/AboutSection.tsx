@@ -22,9 +22,9 @@ export const AboutSection = () => {
     <section id="about" className="section-padding relative">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
         <div>
-          <h2 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-8 relative inline-block">
+          <h2 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-8 relative inline-block pb-6">
             About Me
-            <span className="absolute bottom-[-10px] left-0 w-[60px] h-1 bg-accent" />
+            <span className="absolute bottom-0 left-0 w-[60px] h-1 bg-accent" />
           </h2>
           <p className="text-lg leading-relaxed text-text-muted mb-5">
             I&apos;m a passionate Frontend Engineer with 3+ years of experience

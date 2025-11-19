@@ -30,9 +30,9 @@ export const ProjectsSection = () => {
       }}
     >
       <div className="max-w-[1200px] mx-auto">
-        <h2 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-16 relative inline-block">
+        <h2 className="text-[clamp(40px,5vw,60px)] font-extrabold mb-16 relative inline-block pb-6">
           Featured Projects
-          <span className="absolute bottom-[-10px] left-0 w-[60px] h-1 bg-accent" />
+          <span className="absolute bottom-0 left-0 w-[60px] h-1 bg-accent" />
         </h2>
 
         <div className="grid gap-10">
