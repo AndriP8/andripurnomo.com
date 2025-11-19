@@ -1,7 +1,7 @@
 import { DocumentRenderer } from '@keystatic/core/renderer';
 import { getBlogData, getBlogSlugs } from '@lib/data';
 import { formatDate } from '@lib/utils';
-import { TwitterEmbed, YouTubeEmbed } from '@ui/components';
+import { BlogContentWrapper, TwitterEmbed, YouTubeEmbed } from '@ui/components';
 import { Metadata } from 'next';
 import Image from 'next/image';
 
@@ -96,7 +96,7 @@ export default async function Page({ params }: PageProps) {
           {/* Main Content */}
           <main className="max-w-[750px] mx-auto px-5 md:px-8 pb-20">
             {/* Article Content */}
-            <article className="prose prose-blog max-w-none break-word-blog-content">
+            <BlogContentWrapper>
               {blog.content ? (
                 <DocumentRenderer
                   document={await blog.content()}
@@ -126,7 +126,7 @@ export default async function Page({ params }: PageProps) {
                   }}
                 />
               ) : null}
-            </article>
+            </BlogContentWrapper>
           </main>
         </>
       ) : (

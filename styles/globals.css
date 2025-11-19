@@ -161,4 +161,37 @@
   .prose-blog img {
     @apply rounded-xl my-8;
   }
+
+  /* Code Block Component Styles */
+  .code-block {
+    @apply bg-code-bg border border-code-border rounded-xl my-8 overflow-hidden;
+  }
+
+  .code-header {
+    @apply bg-accent/10 px-5 py-3 flex justify-between items-center border-b border-code-border;
+  }
+
+  .code-lang {
+    @apply text-accent text-xs font-semibold uppercase tracking-wide;
+  }
+
+  .copy-btn {
+    @apply bg-transparent border border-accent text-accent px-4 py-1 rounded-full text-xs cursor-pointer transition-all duration-300;
+  }
+
+  .copy-btn:hover {
+    @apply bg-accent text-primary-dark;
+  }
+
+  .copy-btn.copied {
+    @apply bg-accent text-primary-dark;
+  }
+
+  .code-block pre {
+    @apply p-5 overflow-x-auto m-0 bg-transparent border-0;
+  }
+
+  .code-block code {
+    @apply bg-transparent text-text-light text-sm leading-[1.6] block;
+  }
 }
