@@ -34,17 +34,17 @@ export const Hero = () => {
 
       <div className="w-full max-w-[1400px] mx-auto relative z-10">
         <h1 className="font-black mb-8 leading-[1.1] overflow-visible">
-          <span className="block text-[clamp(50px,8vw,100px)] opacity-0 animate-slide-in">
+          <span className="block text-[clamp(36px,8vw,100px)] opacity-0 animate-slide-in">
             Creative
           </span>
           <span
-            className="block text-[clamp(50px,8vw,100px)] text-stroke opacity-0 animate-slide-in"
+            className="block text-[clamp(36px,8vw,100px)] text-stroke opacity-0 animate-slide-in"
             style={{ animationDelay: '0.2s' }}
           >
             Frontend
           </span>
           <span
-            className="block text-[clamp(50px,8vw,100px)] text-gradient opacity-0 animate-slide-up"
+            className="block text-[clamp(36px,8vw,100px)] text-gradient opacity-0 animate-slide-up"
             style={{ animationDelay: '0.4s' }}
           >
             Engineer
