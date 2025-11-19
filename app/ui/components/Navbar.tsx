@@ -23,19 +23,24 @@ export const Navbar = () => {
   const splitedPathName = pathName?.split('/')[1];
   const basePathName = `/${splitedPathName}`;
 
+  // Hide navbar on homepage as FloatingNav is used
+  if (pathName === '/') {
+    return null;
+  }
+
   return (
     <div className="space-content">
       <nav>
-        <ul className="flex items-start justify-start gap-x-6 border-b border-black py-6">
+        <ul className="flex items-start justify-start gap-x-6 border-b border-white/10 py-6">
           {navItemData.map((item) => {
             return (
               <li
                 key={item.title}
                 className={twMerge(
-                  'list-none text-xl font-medium',
+                  'list-none text-xl font-medium transition duration-200',
                   basePathName === item.href
-                    ? 'text-black'
-                    : 'text-gray-500 hover:text-black  transition duration-200',
+                    ? 'text-text-light'
+                    : 'text-text-muted hover:text-accent',
                 )}
               >
                 <Link href={item.href}>{item.title}</Link>
