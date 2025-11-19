@@ -1,27 +1,32 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { twMerge } from 'tailwind-merge';
 
 const navItemData = [
   {
     title: 'Home',
-    href: '/',
+    href: '/#home',
+  },
+  {
+    title: 'About',
+    href: '/#about',
+  },
+  {
+    title: 'Projects',
+    href: '/#projects',
   },
   {
     title: 'Blog',
-    href: '/blog',
+    href: '/#blog',
   },
   {
-    title: 'About Me',
-    href: '/about',
+    title: 'Contact',
+    href: '/#contact',
   },
 ];
 
 export const Navbar = () => {
   const pathName = usePathname();
-  const splitedPathName = pathName?.split('/')[1];
-  const basePathName = `/${splitedPathName}`;
 
   // Hide navbar on homepage as FloatingNav is used
   if (pathName === '/') {
@@ -29,26 +34,24 @@ export const Navbar = () => {
   }
 
   return (
-    <div className="space-content">
-      <nav>
-        <ul className="flex items-start justify-start gap-x-6 border-b border-white/10 py-6">
-          {navItemData.map((item) => {
-            return (
-              <li
-                key={item.title}
-                className={twMerge(
-                  'list-none text-xl font-medium transition duration-200',
-                  basePathName === item.href
-                    ? 'text-text-light'
-                    : 'text-text-muted hover:text-accent',
-                )}
+    <nav className="fixed top-0 left-0 right-0 bg-primary-dark/95 backdrop-blur-md border-b border-white/10 z-[1000] py-5">
+      <div className="max-w-[1200px] mx-auto px-5 md:px-8 flex justify-between items-center">
+        <Link href="/" className="text-xl font-bold text-accent no-underline">
+          AP
+        </Link>
+        <ul className="flex items-center gap-6 md:gap-8 list-none">
+          {navItemData.map((item) => (
+            <li key={item.title}>
+              <Link
+                href={item.href}
+                className="text-text-light text-sm transition-colors duration-300 hover:text-accent no-underline"
               >
-                <Link href={item.href}>{item.title}</Link>
-              </li>
-            );
-          })}
+                {item.title}
+              </Link>
+            </li>
+          ))}
         </ul>
-      </nav>
-    </div>
+      </div>
+    </nav>
   );
 };
