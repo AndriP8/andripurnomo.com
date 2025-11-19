@@ -1,4 +1,4 @@
-import { Footer, Navbar } from '@ui/components';
+import { FloatingNav, Footer, Navbar } from '@ui/components';
 import { Metadata } from 'next';
 
 export const metadata = {
@@ -13,6 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
+        <FloatingNav />
         <Navbar />
         {children}
         <Footer />
