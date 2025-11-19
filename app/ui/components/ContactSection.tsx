@@ -16,7 +16,7 @@ export const ContactSection = () => {
           exciting projects. Whether you have a question or just want to say hi,
           feel free to reach out!
         </p>
-        <div className="flex justify-center gap-8 flex-wrap mt-10">
+        <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-8 mt-10">
           {contactLinks.map((link) => (
             <a
               key={link.label}
