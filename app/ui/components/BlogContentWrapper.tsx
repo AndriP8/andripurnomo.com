@@ -1,6 +1,20 @@
 'use client';
 
+import Prism from 'prismjs';
 import { useEffect, useRef } from 'react';
+
+// Import language support
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-sql';
+import 'prismjs/components/prism-yaml';
+import 'prismjs/components/prism-markdown';
 
 type BlogContentWrapperProps = {
   children: React.ReactNode;
@@ -8,6 +22,7 @@ type BlogContentWrapperProps = {
 
 export const BlogContentWrapper = ({ children }: BlogContentWrapperProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
+  const processedRef = useRef(new Set<HTMLElement>());
 
   useEffect(() => {
     if (!contentRef.current) return;
@@ -17,15 +32,24 @@ export const BlogContentWrapper = ({ children }: BlogContentWrapperProps) => {
 
     preBlocks.forEach((codeElement) => {
       const preElement = codeElement.parentElement;
-      if (!preElement || preElement.querySelector('.code-header')) return; // Already processed
+      if (!preElement || processedRef.current.has(preElement)) return;
+
+      // Mark as processed
+      processedRef.current.add(preElement);
 
       // Extract language from className (e.g., "language-javascript")
       const className = codeElement.className || '';
       const languageMatch = className.match(/language-(\w+)/);
-      const language = languageMatch ? languageMatch[1] : 'code';
+      const language = languageMatch ? languageMatch[1] : 'javascript';
 
       // Get code content
       const codeContent = codeElement.textContent || '';
+
+      // Check if Prism supports this language
+      const prismLanguage = Prism.languages[language] || Prism.languages.javascript;
+
+      // Highlight the code
+      const highlightedCode = Prism.highlight(codeContent, prismLanguage, language);
 
       // Create wrapper div
       const wrapper = document.createElement('div');
@@ -57,6 +81,10 @@ export const BlogContentWrapper = ({ children }: BlogContentWrapperProps) => {
 
       header.appendChild(langSpan);
       header.appendChild(copyBtn);
+
+      // Update code element with highlighted code
+      codeElement.innerHTML = highlightedCode;
+      codeElement.className = `language-${language}`;
 
       // Wrap the pre element
       preElement.parentNode?.insertBefore(wrapper, preElement);
