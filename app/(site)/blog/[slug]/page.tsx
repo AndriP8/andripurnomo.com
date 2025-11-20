@@ -64,14 +64,14 @@ export default async function Page({ params }: PageProps) {
 
           {/* Cover Image */}
           {blog.cover && (
-            <div className="max-w-[1200px] mx-auto px-5 md:px-8 mb-16">
+            <div className="max-w-[900px] mx-auto px-5 md:px-8 mb-16">
               <div className="relative overflow-hidden rounded-2xl">
                 <Image
                   src={`/images/blogs/${params.slug}/cover/resource.jpg`}
                   alt={blog.cover?.alt ?? ''}
-                  width={1200}
-                  height={600}
-                  className="w-full h-auto object-cover"
+                  width={900}
+                  height={450}
+                  className="w-full h-auto object-cover max-h-[450px]"
                   priority
                 />
               </div>
