@@ -194,4 +194,47 @@
   .code-block code {
     @apply bg-transparent text-text-light text-sm leading-[1.6] block;
   }
+
+  /* Syntax Highlighting for Code Blocks */
+  .token-keyword {
+    color: #ff79c6;
+  }
+
+  .token-string {
+    color: #f1fa8c;
+  }
+
+  .token-function {
+    color: #50fa7b;
+  }
+
+  .token-comment {
+    color: #6272a4;
+    font-style: italic;
+  }
+
+  .token-number {
+    color: #bd93f9;
+  }
+
+  .token-operator {
+    color: #ff79c6;
+  }
+
+  .token-class {
+    color: #8be9fd;
+  }
+
+  .token-builtin,
+  .token-property {
+    color: #8be9fd;
+  }
+
+  .token-variable {
+    color: #f8f8f2;
+  }
+
+  .token-punctuation {
+    color: #f8f8f2;
+  }
 }
