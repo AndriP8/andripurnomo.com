@@ -1,7 +1,7 @@
 import { DocumentRenderer } from '@keystatic/core/renderer';
 import { getBlogData, getBlogSlugs } from '@lib/data';
 import { formatDate } from '@lib/utils';
-import { BlogContentWrapper, TwitterEmbed, YouTubeEmbed } from '@ui/components';
+import { BlogContentWrapper, TableOfContents, TwitterEmbed, YouTubeEmbed } from '@ui/components';
 import { Metadata } from 'next';
 import Image from 'next/image';
 
@@ -93,41 +93,46 @@ export default async function Page({ params }: PageProps) {
             </div>
           )}
 
-          {/* Main Content */}
-          <main className="max-w-[750px] mx-auto px-5 md:px-8 pb-20">
-            {/* Article Content */}
-            <BlogContentWrapper>
-              {blog.content ? (
-                <DocumentRenderer
-                  document={await blog.content()}
-                  componentBlocks={{
-                    youtubeEmbed: (props) => (
-                      <YouTubeEmbed youtubeLink={props.youtubeLink} />
-                    ),
-                    twitterEmbed: (props) => {
-                      const tweetId = props.tweet
-                        .split('/status/')[1]
-                        .split('?')[0];
+          {/* Main Content with TOC */}
+          <div className="max-w-[1200px] mx-auto px-5 md:px-8 pb-20">
+            <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-8 lg:gap-12 items-start">
+              <TableOfContents />
+              <main className="w-full">
+                {/* Article Content */}
+                <BlogContentWrapper>
+                  {blog.content ? (
+                    <DocumentRenderer
+                      document={await blog.content()}
+                      componentBlocks={{
+                        youtubeEmbed: (props) => (
+                          <YouTubeEmbed youtubeLink={props.youtubeLink} />
+                        ),
+                        twitterEmbed: (props) => {
+                          const tweetId = props.tweet
+                            .split('/status/')[1]
+                            .split('?')[0];
 
-                      return <TwitterEmbed tweetId={tweetId} />;
-                    },
-                    image: (props) => {
-                      return (
-                        <Image
-                          src={props.src}
-                          alt={props.alt}
-                          width={props.width}
-                          height={props.height}
-                          className="w-auto h-auto mx-auto rounded-lg"
-                          priority
-                        />
-                      );
-                    },
-                  }}
-                />
-              ) : null}
-            </BlogContentWrapper>
-          </main>
+                          return <TwitterEmbed tweetId={tweetId} />;
+                        },
+                        image: (props) => {
+                          return (
+                            <Image
+                              src={props.src}
+                              alt={props.alt}
+                              width={props.width}
+                              height={props.height}
+                              className="w-auto h-auto mx-auto rounded-lg"
+                              priority
+                            />
+                          );
+                        },
+                      }}
+                    />
+                  ) : null}
+                </BlogContentWrapper>
+              </main>
+            </div>
+          </div>
         </>
       ) : (
         <div className="max-w-lg mx-auto text-center py-20 mt-[100px]">

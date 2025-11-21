@@ -11,5 +11,6 @@ export * from './Footer';
 export * from './Hero';
 export * from './Navbar';
 export * from './ProjectsSection';
+export * from './TableOfContents';
 export * from './TweetEmbed';
 export * from './YouTubeEmbed';
