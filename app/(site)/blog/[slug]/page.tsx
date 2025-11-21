@@ -1,10 +1,10 @@
 import { DocumentRenderer } from '@keystatic/core/renderer';
 import { getBlogData, getBlogSlugs } from '@lib/data';
 import { formatDate } from '@lib/utils';
-import { TwitterEmbed, YouTubeEmbed } from '@ui/components';
-import { Dots } from '@ui/components/Dots';
+import { BlogContentWrapper, TwitterEmbed, YouTubeEmbed } from '@ui/components';
 import { Metadata } from 'next';
 import Image from 'next/image';
+
 type Props = {
   params: { slug: string };
 };
@@ -27,73 +27,114 @@ export default async function Page({ params }: PageProps) {
   const blog = await getBlogData(params.slug);
 
   return (
-    <div className="min-h-[80vh] h-full w-full bg-gray-50 max-w-4xl mx-auto my-28">
+    <div className="min-h-screen w-full">
       {blog ? (
-        <div className="mx-6 md:mx-16 lg:mx-0">
-          <h1 className="text-4xl font-medium">{blog.title}</h1>
-          <div className="mt-1 flex items-center gap-x-2 text-gray-500">
-            <p>{formatDate(blog.createdAt)}</p>
-            <Dots bgColor="bg-gray-500" />
-            <p>{blog.timeToRead} min read</p>
-          </div>
-          <div className="mt-12">
-            <Image
-              src={`/images/blogs/${params.slug}/cover/resource.jpg`}
-              alt={blog.cover?.alt ?? ''}
-              width={700}
-              height={500}
-              className="rounded-md w-[700px] h-[500px] object-cover mx-auto"
-              priority
-            />
-            <div className="flex justify-center mt-2">
-              <span>
-                Photo by{' '}
-                <a
-                  href={blog.cover?.ownerLink ?? ''}
-                  target="_blank"
-                  className="underline"
-                >
-                  {blog.cover?.owner}
-                </a>
-              </span>
-            </div>
-          </div>
-          <main className="w-full mt-20 prose max-w-none break-word-blog-content">
-            {blog.content ? (
-              <DocumentRenderer
-                document={await blog.content()}
-                componentBlocks={{
-                  youtubeEmbed: (props) => (
-                    <YouTubeEmbed youtubeLink={props.youtubeLink} />
-                  ),
-                  twitterEmbed: (props) => {
-                    const tweetId = props.tweet
-                      .split('/status/')[1]
-                      .split('?')[0];
+        <>
+          {/* Hero Section */}
+          <header className="mt-[100px] py-20 md:py-32 text-center relative overflow-hidden">
+            {/* Radial gradient background */}
+            <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-gradient-radial animate-pulse-glow pointer-events-none" />
 
-                    return <TwitterEmbed tweetId={tweetId} />;
-                  },
-                  image: (props) => {
-                    return (
-                      <Image
-                        src={props.src}
-                        alt={props.alt}
-                        width={props.width}
-                        height={props.height}
-                        className="w-auto h-auto mx-auto"
-                        priority
-                      />
-                    );
-                  },
-                }}
-              />
-            ) : null}
+            <div className="max-w-[800px] mx-auto px-5 md:px-8 relative z-10">
+              {/* Category Badge */}
+              <span className="inline-block px-5 py-2 bg-accent/10 border border-accent rounded-full text-accent text-xs uppercase tracking-wider mb-5">
+                Frontend
+              </span>
+
+              {/* Blog Title with Gradient */}
+              <h1 className="text-[clamp(32px,5vw,56px)] font-black leading-[1.1] mb-8 bg-gradient-to-r from-text-light to-accent bg-clip-text text-transparent">
+                {blog.title}
+              </h1>
+
+              {/* Metadata */}
+              <div className="flex justify-center gap-6 md:gap-8 flex-wrap text-text-muted text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-gradient-accent" />
+                  <span>Andri Purnomo</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>{formatDate(blog.createdAt)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>{blog.timeToRead} min read</span>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Cover Image */}
+          {blog.cover && (
+            <div className="max-w-[900px] mx-auto px-5 md:px-8 mb-16">
+              <div className="relative overflow-hidden rounded-2xl">
+                <Image
+                  src={`/images/blogs/${params.slug}/cover/resource.jpg`}
+                  alt={blog.cover?.alt ?? ''}
+                  width={900}
+                  height={450}
+                  className="w-full h-auto object-cover max-h-[450px]"
+                  priority
+                />
+              </div>
+              {blog.cover?.owner && (
+                <div className="flex justify-center mt-4">
+                  <span className="text-sm text-text-muted">
+                    Photo by{' '}
+                    <a
+                      href={blog.cover?.ownerLink ?? ''}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent hover:text-accent-alt transition-colors duration-200 underline decoration-accent/50 hover:decoration-accent-alt/50"
+                    >
+                      {blog.cover?.owner}
+                    </a>
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Main Content */}
+          <main className="max-w-[750px] mx-auto px-5 md:px-8 pb-20">
+            {/* Article Content */}
+            <BlogContentWrapper>
+              {blog.content ? (
+                <DocumentRenderer
+                  document={await blog.content()}
+                  componentBlocks={{
+                    youtubeEmbed: (props) => (
+                      <YouTubeEmbed youtubeLink={props.youtubeLink} />
+                    ),
+                    twitterEmbed: (props) => {
+                      const tweetId = props.tweet
+                        .split('/status/')[1]
+                        .split('?')[0];
+
+                      return <TwitterEmbed tweetId={tweetId} />;
+                    },
+                    image: (props) => {
+                      return (
+                        <Image
+                          src={props.src}
+                          alt={props.alt}
+                          width={props.width}
+                          height={props.height}
+                          className="w-auto h-auto mx-auto rounded-lg"
+                          priority
+                        />
+                      );
+                    },
+                  }}
+                />
+              ) : null}
+            </BlogContentWrapper>
           </main>
-        </div>
+        </>
       ) : (
-        <div className="max-w-lg mx-auto">
-          <h2>Oops! Something went wrong.</h2>
-          <p>Please refresh the page to try again.</p>
+        <div className="max-w-lg mx-auto text-center py-20 mt-[100px]">
+          <h2 className="text-3xl font-bold text-text-light mb-4">
+            Oops! Something went wrong.
+          </h2>
+          <p className="text-text-muted">Please refresh the page to try again.</p>
         </div>
       )}
     </div>

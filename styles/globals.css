@@ -98,4 +98,173 @@
     color: transparent;
     -webkit-text-stroke: 2px #e0e0e0;
   }
+
+  /* Blog content prose dark theme styling */
+  .prose-blog {
+    @apply text-text-light;
+  }
+
+  .prose-blog h2 {
+    @apply text-[32px] font-bold text-text-light mt-[60px] mb-[30px] pl-5 relative;
+  }
+
+  .prose-blog h2::before {
+    content: '#';
+    @apply absolute left-0 text-accent opacity-50;
+  }
+
+  .prose-blog h3 {
+    @apply text-2xl font-semibold text-text-light mt-10 mb-5;
+  }
+
+  .prose-blog h4 {
+    @apply text-xl font-semibold text-text-light mt-8 mb-4;
+  }
+
+  .prose-blog p {
+    @apply text-lg leading-[1.8] mb-6 text-text-light/90;
+  }
+
+  .prose-blog a {
+    @apply text-accent hover:text-accent-alt transition-colors duration-200 underline decoration-accent/50 hover:decoration-accent-alt/50;
+  }
+
+  .prose-blog strong {
+    @apply text-text-light font-bold;
+  }
+
+  .prose-blog code {
+    @apply bg-accent/10 text-accent px-2 py-1 rounded text-base;
+  }
+
+  .prose-blog pre {
+    @apply bg-code-bg border border-code-border rounded-xl my-8 overflow-hidden;
+  }
+
+  .prose-blog pre code {
+    @apply bg-transparent text-text-light text-sm leading-[1.6] p-5 block overflow-x-auto;
+  }
+
+  .prose-blog blockquote {
+    @apply border-l-4 border-accent bg-white/[0.03] text-text-muted p-5 my-8 rounded-lg;
+  }
+
+  .prose-blog ul,
+  .prose-blog ol {
+    @apply text-text-light my-5 ml-8;
+  }
+
+  .prose-blog li {
+    @apply text-lg leading-[1.8] mb-3 text-text-light/90;
+  }
+
+  .prose-blog img {
+    @apply rounded-xl my-8;
+  }
+
+  /* Code Block Component Styles */
+  .code-block {
+    @apply bg-code-bg border border-code-border rounded-xl my-8 overflow-hidden;
+  }
+
+  .code-header {
+    @apply bg-accent/10 px-5 py-3 flex justify-between items-center border-b border-code-border;
+  }
+
+  .code-lang {
+    @apply text-accent text-xs font-semibold uppercase tracking-wide;
+  }
+
+  .copy-btn {
+    @apply bg-transparent border border-accent text-accent px-4 py-1 rounded-full text-xs cursor-pointer transition-all duration-300;
+  }
+
+  .copy-btn:hover {
+    @apply bg-accent text-primary-dark;
+  }
+
+  .copy-btn.copied {
+    @apply bg-accent text-primary-dark;
+  }
+
+  .code-block pre {
+    @apply p-5 overflow-x-auto m-0 bg-transparent border-0;
+  }
+
+  .code-block code {
+    @apply bg-transparent text-text-light text-sm leading-[1.6] block;
+  }
+
+  /* Syntax Highlighting for Code Blocks (Prism.js tokens) */
+  .token.keyword,
+  .token.control,
+  .token.directive,
+  .token.unit {
+    color: #ff79c6;
+  }
+
+  .token.string,
+  .token.attr-value {
+    color: #f1fa8c;
+  }
+
+  .token.function,
+  .token.method {
+    color: #50fa7b;
+  }
+
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: #6272a4;
+    font-style: italic;
+  }
+
+  .token.number,
+  .token.boolean {
+    color: #bd93f9;
+  }
+
+  .token.operator,
+  .token.entity,
+  .token.url {
+    color: #ff79c6;
+  }
+
+  .token.class-name,
+  .token.class {
+    color: #8be9fd;
+  }
+
+  .token.builtin,
+  .token.property,
+  .token.attr-name,
+  .token.constant,
+  .token.symbol {
+    color: #8be9fd;
+  }
+
+  .token.variable {
+    color: #f8f8f2;
+  }
+
+  .token.punctuation,
+  .token.tag {
+    color: #f8f8f2;
+  }
+
+  .token.selector,
+  .token.important,
+  .token.atrule {
+    color: #ff79c6;
+  }
+
+  .token.deleted {
+    color: #ff5555;
+  }
+
+  .token.inserted {
+    color: #50fa7b;
+  }
 }
