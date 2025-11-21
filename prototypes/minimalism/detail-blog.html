@@ -4,351 +4,1060 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Why I stuck with Vanilla CSS | Andri Purnomo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
-        rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Space Grotesk', 'sans-serif'],
-                        mono: ['Space Mono', 'monospace'],
-                    },
-                    colors: {
-                        'bg-main': '#f0f0f0',
-                        'bg-card': '#ffffff',
-                        'accent-yellow': '#ffde00',
-                        'accent-pink': '#ff90e8',
-                        'accent-blue': '#2dd4bf',
-                        'border-black': '#000000',
-                    },
-                    boxShadow: {
-                        'hard': '5px 5px 0px 0px #000000',
-                        'hard-hover': '8px 8px 0px 0px #000000',
-                        'hard-sm': '3px 3px 0px 0px #000000',
-                    },
-                    typography: {
-                        DEFAULT: {
-                            css: {
-                                color: '#000',
-                                fontFamily: 'Space Grotesk, sans-serif',
-                                h1: { fontFamily: 'Space Grotesk, sans-serif', fontWeight: '700' },
-                                h2: { fontFamily: 'Space Grotesk, sans-serif', fontWeight: '700', borderBottom: '2px solid black', paddingBottom: '0.5rem' },
-                                'code::before': { content: '""' },
-                                'code::after': { content: '""' },
-                            },
-                        },
-                    },
-                }
-            }
-        }
-    </script>
-    <!-- Tailwind Typography Plugin would be ideal here, but we'll style manually for the standalone file -->
-
+    <title>Building Scalable Chat Systems: Lessons from Production - Andri Purnomo</title>
     <style>
-        body {
-            background-color: #e2e2e2;
-            background-image: radial-gradient(#000000 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        /* Brutalist Reset */
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        /* Custom Article Styling */
-        .prose p {
-            margin-bottom: 1.5rem;
-            line-height: 1.75;
-            font-size: 1.125rem;
+        :root {
+            --primary-dark: #0a0a0a;
+            --accent: #00ff88;
+            --accent-alt: #7b3ff2;
+            --text-light: #e0e0e0;
+            --text-muted: #888;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --code-bg: #1a1a1a;
+            --code-border: rgba(0, 255, 136, 0.2);
         }
 
-        .prose h2 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-top: 3rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 4px solid black;
-            display: inline-block;
-            padding-right: 2rem;
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-light);
+            line-height: 1.6;
         }
 
-        .prose h3 {
-            font-size: 1.5rem;
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 20px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 20px;
             font-weight: 700;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
+            color: var(--accent);
+            text-decoration: none;
         }
 
-        .prose ul {
-            list-style-type: square;
-            padding-left: 1.5rem;
-            margin-bottom: 1.5rem;
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
         }
 
-        .prose li {
-            margin-bottom: 0.5rem;
-            padding-left: 0.5rem;
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
         }
 
-        .prose blockquote {
-            border-left: 6px solid black;
-            background: #ffde00;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            font-family: 'Space Mono', monospace;
-            font-style: italic;
-            box-shadow: 5px 5px 0px 0px #000000;
+        .nav-links a:hover {
+            color: var(--accent);
         }
 
-        .prose code {
-            background: #ff90e8;
-            font-family: 'Space Mono', monospace;
-            padding: 0.1rem 0.4rem;
-            border: 1px solid black;
-            font-size: 0.9em;
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 61px;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--accent);
+            z-index: 999;
+            transition: width 0.2s ease;
         }
 
-        .prose pre {
-            background: #000;
-            color: #fff;
-            padding: 1.5rem;
-            overflow-x: auto;
-            border: 2px solid black;
-            box-shadow: 5px 5px 0px 0px #acc8e5;
-            /* slight blue accent shadow */
-            margin-bottom: 2rem;
+        /* Hero Section */
+        .blog-hero {
+            margin-top: 100px;
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .prose pre code {
+        .blog-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.3;
+            }
+        }
+
+        .blog-hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .blog-category {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 25px;
+            color: var(--accent);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .blog-title {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--text-light) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+        }
+
+        /* Table of Contents */
+        .toc-container {
+            position: sticky;
+            top: 100px;
+            margin-bottom: 40px;
+        }
+
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .toc-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-item {
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .toc-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: rgba(0, 255, 136, 0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toc-item.active::before {
+            background: var(--accent);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .toc-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .toc-link:hover {
+            color: var(--accent);
+        }
+
+        .toc-item.active .toc-link {
+            color: var(--text-light);
+        }
+
+        /* Main Content Layout */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        /* Article Content */
+        .article-content {
+            max-width: 750px;
+        }
+
+        .article-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 60px 0 30px 0;
+            color: var(--text-light);
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .article-content h2::before {
+            content: '#';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        .article-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 20px 0;
+            color: var(--text-light);
+        }
+
+        .article-content p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: rgba(224, 224, 224, 0.9);
+        }
+
+        .article-content ul,
+        .article-content ol {
+            margin: 20px 0 30px 30px;
+        }
+
+        .article-content li {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            color: rgba(224, 224, 224, 0.9);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 12px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--code-border);
+        }
+
+        .code-lang {
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .copy-btn {
             background: transparent;
-            color: inherit;
-            border: none;
-            padding: 0;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        ::-webkit-scrollbar {
-            width: 12px;
-            border-left: 2px solid black;
-            background: #f0f0f0;
+        .copy-btn:hover {
+            background: var(--accent);
+            color: var(--primary-dark);
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #000;
-            border: 2px solid #000;
+        .copy-btn.copied {
+            background: var(--accent);
+            color: var(--primary-dark);
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ff90e8;
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        /* Inline code */
+        .article-content p code {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: var(--accent);
+            font-size: 16px;
+        }
+
+        /* Syntax Highlighting */
+        .token-keyword {
+            color: #ff79c6;
+        }
+
+        .token-string {
+            color: #f1fa8c;
+        }
+
+        .token-function {
+            color: #50fa7b;
+        }
+
+        .token-comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+
+        .token-number {
+            color: #bd93f9;
+        }
+
+        .token-operator {
+            color: #ff79c6;
+        }
+
+        .token-class {
+            color: #8be9fd;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .callout.warning {
+            border-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .callout.warning .callout-title {
+            color: #ff6b35;
+        }
+
+        /* Share Section */
+        .share-section {
+            margin: 80px 0 40px 0;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .share-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Author Bio */
+        .author-bio {
+            margin: 60px 0;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(123, 63, 242, 0.05) 100%);
+            border-radius: 20px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .author-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+            flex-shrink: 0;
+        }
+
+        .author-info h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .author-info p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .author-social {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            color: var(--text-light);
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--accent);
+        }
+
+        /* Related Posts */
+        .related-posts {
+            margin: 80px 0;
+        }
+
+        .related-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .related-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .related-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .related-category {
+            color: var(--accent);
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .related-card h3 {
+            color: var(--text-light);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .related-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 100px;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 968px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .toc-container {
+                position: static;
+                margin-bottom: 40px;
+            }
+
+            .blog-meta {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .author-bio {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .share-buttons {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 
-<body class="text-black font-mono selection:bg-black selection:text-white pb-12">
-
-    <!-- Sticky Top Bar -->
-    <nav
-        class="fixed top-0 left-0 right-0 z-50 bg-accent-yellow border-b-2 border-black h-14 flex items-center justify-between px-4 md:px-8">
-        <a href="index.html" class="font-bold text-lg tracking-tighter hover:underline">ANDRI.PURNOMO</a>
-        <div class="hidden md:flex gap-6 text-sm font-bold">
-            <a href="index.html#work" class="hover:bg-black hover:text-white px-2 py-1 transition-colors">WORK_</a>
-            <a href="index.html#writing" class="bg-black text-white px-2 py-1 transition-colors">WRITING_</a>
-            <a href="index.html#contact"
-                class="hover:bg-black hover:text-white px-2 py-1 transition-colors">CONTACT_</a>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">AP</a>
+            <ul class="nav-links">
+                <li><a href="/#home">Home</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#projects">Projects</a></li>
+                <li><a href="/#blog">Blog</a></li>
+                <li><a href="/#contact">Contact</a></li>
+            </ul>
         </div>
-        <a href="mailto:hello@andripurnomo.com"
-            class="bg-black text-white px-4 py-1 text-sm font-bold hover:bg-white hover:text-black border-2 border-transparent hover:border-black transition-all">
-            HIRE ME
-        </a>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-4 md:px-8 pt-28 pb-24">
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
 
-        <!-- Back Navigation -->
-        <div class="mb-8">
-            <a href="index.html"
-                class="inline-flex items-center gap-2 font-bold hover:bg-black hover:text-white px-4 py-2 border-2 border-black shadow-hard-sm hover:shadow-none transition-all bg-white">
-                <span><-< /span> BACK TO HOME
-            </a>
+    <!-- Hero Section -->
+    <header class="blog-hero">
+        <div class="blog-hero-content">
+            <span class="blog-category">System Design</span>
+            <h1 class="blog-title">Building Scalable Chat Systems: Lessons from Production</h1>
+            <div class="blog-meta">
+                <div class="meta-item">
+                    <div class="author-avatar"></div>
+                    <span>Andri Purnomo</span>
+                </div>
+                <div class="meta-item">
+                    <span>November 8, 2024</span>
+                </div>
+                <div class="meta-item">
+                    <span>12 min read</span>
+                </div>
+            </div>
         </div>
+    </header>
 
-        <!-- Article Container ("The Folder") -->
-        <article class="relative bg-bg-card border-2 border-black shadow-hard">
-
-            <!-- Top "Tab" -->
-            <div
-                class="absolute -top-11 left-[-2px] bg-accent-pink border-2 border-black border-b-0 h-12 px-6 flex items-center font-bold font-mono text-sm z-10">
-                LOG_ENTRY_014
+    <!-- Main Content -->
+    <main class="content-wrapper">
+        <!-- Table of Contents -->
+        <aside class="toc-container">
+            <div class="toc">
+                <h3 class="toc-title">Table of Contents</h3>
+                <ul class="toc-list">
+                    <li class="toc-item active">
+                        <a href="#introduction" class="toc-link">Introduction</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#architecture" class="toc-link">Architecture Overview</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#websockets" class="toc-link">WebSocket Implementation</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#offline" class="toc-link">Offline Support</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#scaling" class="toc-link">Scaling Strategies</a>
+                    </li>
+                    <li class="toc-item">
+                        <a href="#lessons" class="toc-link">Key Lessons Learned</a>
+                    </li>
+                </ul>
             </div>
+        </aside>
 
-            <!-- Article Header -->
-            <div class="p-8 md:p-12 border-b-2 border-black bg-white relative z-20">
-                <div class="flex gap-2 mb-6 flex-wrap">
-                    <span class="bg-black text-white text-xs font-bold px-2 py-1">CSS</span>
-                    <span class="border border-black text-xs font-bold px-2 py-1">FRONTEND</span>
-                    <span class="border border-black text-xs font-bold px-2 py-1">2025</span>
+        <!-- Article Content -->
+        <article class="article-content">
+            <section id="introduction">
+                <p>
+                    Building a real-time chat application that can handle thousands of concurrent users while
+                    maintaining
+                    sub-second message delivery is one of the most challenging projects I've tackled. Over the past
+                    year,
+                    our team has built and scaled a chat system from zero to 50,000+ daily active users, and I want to
+                    share the technical decisions and hard-won lessons from this journey.
+                </p>
+
+                <p>
+                    The requirements were ambitious: real-time messaging with <code>< 100ms</code> latency, offline
+                    support with
+                    automatic synchronization, cross-tab synchronization, and the ability to handle 10,000+ concurrent
+                    WebSocket connections per server. Here's how we built it.
+                </p>
+            </section>
+
+            <section id="architecture">
+                <h2>Architecture Overview</h2>
+
+                <p>
+                    Our architecture evolved significantly as we scaled. We started with a simple Node.js server using
+                    Socket.io and ended up with a distributed system using Redis Pub/Sub, message queuing, and
+                    horizontal
+                    scaling across multiple regions.
+                </p>
+
+                <div class="callout">
+                    <div class="callout-title">
+                        💡 Key Insight
+                    </div>
+                    <p>
+                        Don't over-engineer from day one. We started simple and added complexity only when we hit actual
+                        bottlenecks. This saved us months of unnecessary work.
+                    </p>
                 </div>
 
-                <h1 class="font-sans text-4xl md:text-6xl font-black leading-[0.95] mb-8 uppercase">
-                    Why I stuck with<br>Vanilla CSS in 2025
-                </h1>
+                <h3>Core Components</h3>
 
-                <div
-                    class="flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs text-gray-500 pt-6 border-t-2 border-dashed border-black">
-                    <div>
-                        PUBLISHED: <span class="text-black font-bold">SEPTEMBER 12, 2024</span>
+                <ul>
+                    <li><strong>WebSocket Gateway:</strong> Handles all real-time connections using Socket.io</li>
+                    <li><strong>Message Queue:</strong> RabbitMQ for reliable message delivery and processing</li>
+                    <li><strong>Cache Layer:</strong> Redis for session management and temporary message storage</li>
+                    <li><strong>Database:</strong> PostgreSQL for persistent storage with read replicas</li>
+                    <li><strong>CDN:</strong> CloudFront for static assets and media files</li>
+                </ul>
+            </section>
+
+            <section id="websockets">
+                <h2>WebSocket Implementation</h2>
+
+                <p>
+                    The WebSocket layer is the heart of any real-time chat system. We chose Socket.io for its excellent
+                    fallback support and built-in reconnection logic, but we had to customize it heavily for our needs.
+                </p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <div>
-                        READ TIME: <span class="text-black font-bold">6 MIN READ</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Article Body -->
-            <div class="p-8 md:p-12 prose max-w-none bg-white font-sans text-black">
-
-                <p class="font-mono text-sm border-l-2 border-black pl-4 mb-8 text-gray-600">
-                    TL;DR: Build tools come and go, but the browser platform remains. Here is why I removed Tailwind
-                    from my personal projects in favor of modern CSS variables and nesting.
-                </p>
-
-                <p>
-                    In the ever-shifting landscape of frontend development, we often find ourselves oscillating between
-                    "separation of concerns" and "colocation." For the past five years, utility-first frameworks
-                    dominated my workflow. They were fast, efficient, and solved specificity wars.
-                </p>
-
-                <p>
-                    But in 2025, the browser has caught up.
-                </p>
-
-                <h2>The Native Stack</h2>
-                <p>
-                    With the introduction of native CSS Nesting and the `@scope` rule, many of the problems utility
-                    classes solved are now handled natively by the engine. We no longer need a build step to write
-                    maintainable styles.
-                </p>
-
-                <blockquote>
-                    "The best build tool is no build tool at all. The closer we get to the metal (or the browser
-                    engine), the more longevity our code has."
-                </blockquote>
-
-                <p>
-                    Consider this simple component. In a utility framework, it might look like a soup of classes. In
-                    modern vanilla CSS, we can structure it logically:
-                </p>
-
-                <pre><code>/* Native CSS Nesting */
-.card {
-  background: var(--surface-1);
-  border: 2px solid black;
-  padding: 2rem;
-
-  & h3 {
-    font-weight: 800;
-    margin-bottom: 1rem;
+                    <pre><code><span class="token-comment">// WebSocket connection manager with exponential backoff</span>
+<span class="token-keyword">class</span> <span class="token-class">ConnectionManager</span> {
+  <span class="token-keyword">constructor</span>() {
+    <span class="token-keyword">this</span>.socket = <span class="token-keyword">null</span>;
+    <span class="token-keyword">this</span>.reconnectAttempts = <span class="token-number">0</span>;
+    <span class="token-keyword">this</span>.maxReconnectDelay = <span class="token-number">30000</span>;
+    <span class="token-keyword">this</span>.messageQueue = [];
   }
 
-  & button {
-    background: black;
-    color: white;
-    
-    &:hover {
-        transform: translateY(-2px);
+  <span class="token-keyword">async</span> <span class="token-function">connect</span>() {
+    <span class="token-keyword">this</span>.socket = <span class="token-function">io</span>(<span class="token-string">'wss://chat.example.com'</span>, {
+      transports: [<span class="token-string">'websocket'</span>],
+      reconnection: <span class="token-keyword">false</span>, <span class="token-comment">// We handle this manually</span>
+      auth: {
+        token: <span class="token-keyword">await</span> <span class="token-function">getAuthToken</span>()
+      }
+    });
+
+    <span class="token-keyword">this</span>.socket.<span class="token-function">on</span>(<span class="token-string">'connect'</span>, () => {
+      <span class="token-keyword">this</span>.reconnectAttempts = <span class="token-number">0</span>;
+      <span class="token-keyword">this</span>.<span class="token-function">flushMessageQueue</span>();
+    });
+
+    <span class="token-keyword">this</span>.socket.<span class="token-function">on</span>(<span class="token-string">'disconnect'</span>, () => {
+      <span class="token-keyword">this</span>.<span class="token-function">scheduleReconnect</span>();
+    });
+  }
+
+  <span class="token-function">sendMessage</span>(message) {
+    <span class="token-keyword">if</span> (<span class="token-keyword">this</span>.socket?.connected) {
+      <span class="token-keyword">this</span>.socket.<span class="token-function">emit</span>(<span class="token-string">'message'</span>, message);
+    } <span class="token-keyword">else</span> {
+      <span class="token-keyword">this</span>.messageQueue.<span class="token-function">push</span>(message);
     }
   }
 }</code></pre>
+                </div>
 
-                <h2>Performance Wins</h2>
                 <p>
-                    By dropping the runtime overhead of CSS-in-JS libraries and the build-time complexity of huge
-                    utility generators, we ship smaller bundles. My personal site's lighthouse score jumped from
-                    <code>92</code> to <code>100</code> just by removing the styling framework.
+                    One critical optimization was implementing message batching. Instead of sending each message
+                    immediately, we batch messages that arrive within a 50ms window. This reduced our server load
+                    by 40% during peak hours.
                 </p>
 
-                <h3>Key Takeaways</h3>
+                <div class="callout warning">
+                    <div class="callout-title">
+                        ⚠️ Common Pitfall
+                    </div>
+                    <p>
+                        Don't rely on WebSocket connections for critical state. Connections drop frequently on mobile
+                        networks. Always implement proper reconnection logic and message queuing.
+                    </p>
+                </div>
+            </section>
+
+            <section id="offline">
+                <h2>Offline Support</h2>
+
+                <p>
+                    Offline support was non-negotiable for our mobile users. We implemented a sophisticated sync
+                    mechanism using IndexedDB for local storage and a custom conflict resolution strategy.
+                </p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">TypeScript</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="token-keyword">interface</span> <span class="token-class">Message</span> {
+  id: <span class="token-keyword">string</span>;
+  localId: <span class="token-keyword">string</span>;
+  content: <span class="token-keyword">string</span>;
+  timestamp: <span class="token-keyword">number</span>;
+  syncStatus: <span class="token-string">'pending'</span> | <span class="token-string">'synced'</span> | <span class="token-string">'failed'</span>;
+}
+
+<span class="token-keyword">class</span> <span class="token-class">OfflineSync</span> {
+  <span class="token-keyword">private</span> db: IDBDatabase;
+  <span class="token-keyword">private</span> syncQueue: Message[] = [];
+
+  <span class="token-keyword">async</span> <span class="token-function">queueMessage</span>(message: Message): <span class="token-keyword">Promise</span>&lt;<span class="token-keyword">void</span>&gt; {
+    <span class="token-comment">// Store in IndexedDB</span>
+    <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">storeLocally</span>(message);
+    
+    <span class="token-comment">// Attempt immediate sync if online</span>
+    <span class="token-keyword">if</span> (navigator.onLine) {
+      <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">syncMessage</span>(message);
+    } <span class="token-keyword">else</span> {
+      <span class="token-keyword">this</span>.syncQueue.<span class="token-function">push</span>(message);
+    }
+  }
+
+  <span class="token-keyword">async</span> <span class="token-function">syncAllPending</span>(): <span class="token-keyword">Promise</span>&lt;<span class="token-keyword">void</span>&gt; {
+    <span class="token-keyword">const</span> pending = <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">getPendingMessages</span>();
+    
+    <span class="token-keyword">for</span> (<span class="token-keyword">const</span> message <span class="token-keyword">of</span> pending) {
+      <span class="token-keyword">try</span> {
+        <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">syncMessage</span>(message);
+        message.syncStatus = <span class="token-string">'synced'</span>;
+      } <span class="token-keyword">catch</span> (error) {
+        message.syncStatus = <span class="token-string">'failed'</span>;
+      }
+      <span class="token-keyword">await</span> <span class="token-keyword">this</span>.<span class="token-function">updateMessage</span>(message);
+    }
+  }
+}</code></pre>
+                </div>
+
+                <p>
+                    The key to reliable offline support is idempotency. Every message has a client-generated ID,
+                    allowing us to prevent duplicates when messages are retried after network failures.
+                </p>
+            </section>
+
+            <section id="scaling">
+                <h2>Scaling Strategies</h2>
+
+                <p>
+                    As we grew from hundreds to thousands of concurrent users, we had to rethink our architecture
+                    multiple times. Here are the key strategies that allowed us to scale:
+                </p>
+
+                <h3>1. Horizontal Scaling with Sticky Sessions</h3>
+                <p>
+                    We use NGINX with IP hash load balancing to ensure users consistently connect to the same
+                    WebSocket server. This simplifies state management while allowing us to add servers as needed.
+                </p>
+
+                <h3>2. Redis Pub/Sub for Cross-Server Communication</h3>
+                <p>
+                    When a user on Server A sends a message to a user on Server B, we use Redis Pub/Sub to
+                    broadcast the message across all servers. Each server subscribes to channels for its connected
+                    users.
+                </p>
+
+                <h3>3. Database Optimization</h3>
                 <ul>
-                    <li>CSS Variables are more powerful than pre-processor variables because they can react to the DOM.
-                    </li>
-                    <li>Native Nesting removes the need for Sass/Less.</li>
-                    <li><code>@scope</code> solves the specificity wars without BEM.</li>
-                    <li>Maintainability is about clarity, not just brevity.</li>
+                    <li>Implemented read replicas for message history queries</li>
+                    <li>Added composite indexes on (conversation_id, timestamp)</li>
+                    <li>Partitioned messages table by month</li>
+                    <li>Cached recent messages in Redis with 5-minute TTL</li>
                 </ul>
 
-                <hr class="border-2 border-black my-12 border-dashed">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">SQL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="token-comment">-- Partitioned message table for better performance</span>
+<span class="token-keyword">CREATE TABLE</span> messages_2024_11 <span class="token-keyword">PARTITION OF</span> messages
+<span class="token-keyword">FOR VALUES FROM</span> (<span class="token-string">'2024-11-01'</span>) <span class="token-keyword">TO</span> (<span class="token-string">'2024-12-01'</span>);
+
+<span class="token-comment">-- Optimized index for message queries</span>
+<span class="token-keyword">CREATE INDEX</span> idx_messages_conv_time 
+<span class="token-keyword">ON</span> messages_2024_11 (conversation_id, created_at <span class="token-keyword">DESC</span>)
+<span class="token-keyword">WHERE</span> deleted_at <span class="token-keyword">IS NULL</span>;</code></pre>
+                </div>
+            </section>
+
+            <section id="lessons">
+                <h2>Key Lessons Learned</h2>
 
                 <p>
-                    I'm not saying frameworks are dead. For large teams, the constraints they provide are invaluable.
-                    But for a personal digital garden? <span
-                        class="bg-accent-yellow font-bold border-b-2 border-black">Raw CSS is incredibly
-                        liberating.</span>
+                    After a year of building and scaling this system, here are the most important lessons we learned:
                 </p>
 
+                <h3>1. Monitor Everything</h3>
+                <p>
+                    We use Datadog to track WebSocket connections, message latency, queue depth, and error rates.
+                    Setting up proper monitoring early saved us from numerous potential outages.
+                </p>
+
+                <h3>2. Plan for Mobile Networks</h3>
+                <p>
+                    Mobile users experience frequent disconnections. Implement aggressive reconnection strategies,
+                    message queuing, and make your UI clearly show connection status.
+                </p>
+
+                <h3>3. Rate Limiting is Critical</h3>
+                <p>
+                    We learned this the hard way when a bug caused a client to send 10,000 messages per second.
+                    Now we have rate limiting at multiple levels: client, WebSocket gateway, and API.
+                </p>
+
+                <h3>4. Keep Messages Small</h3>
+                <p>
+                    Large messages (images, files) should be uploaded separately to S3 with only URLs sent through
+                    the WebSocket connection. This keeps the real-time pipeline fast.
+                </p>
+
+                <div class="callout">
+                    <div class="callout-title">
+                        🚀 Performance Tip
+                    </div>
+                    <p>
+                        Implement pagination for message history. Loading 10,000 messages at once will crash most
+                        browsers. We load 50 messages initially and implement infinite scroll for history.
+                    </p>
+                </div>
+
+                <h3>5. Test Under Realistic Conditions</h3>
+                <p>
+                    Use tools like Artillery.io to simulate thousands of concurrent WebSocket connections. Test with
+                    realistic message patterns, not just connection counts.
+                </p>
+            </section>
+
+            <!-- Share Section -->
+            <div class="share-section">
+                <h3 class="share-title">Found this helpful? Share it with others!</h3>
+                <div class="share-buttons">
+                    <a href="#" class="share-btn">
+                        <span>🐦</span>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="share-btn">
+                        <span>💼</span>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="#" class="share-btn">
+                        <span>🔗</span>
+                        <span>Copy Link</span>
+                    </a>
+                </div>
             </div>
 
-            <!-- Footer / Author Box -->
-            <div class="border-t-2 border-black bg-bg-main p-8 md:p-12">
-                <div class="flex flex-col md:flex-row gap-6 items-center">
-                    <div
-                        class="w-20 h-20 bg-black border-2 border-white shadow-hard shrink-0 flex items-center justify-center text-white font-bold text-2xl">
-                        AP
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-xl mb-2">WRITTEN BY ANDRI PURNOMO</h3>
-                        <p class="font-mono text-sm mb-4 max-w-lg">
-                            Software Engineer specializing in creative development. Currently obsessed with Rust, WebGL,
-                            and brutalist design systems.
-                        </p>
-                        <a href="#" class="text-sm font-bold underline hover:bg-black hover:text-white">FOLLOW ON
-                            TWITTER -></a>
+            <!-- Author Bio -->
+            <div class="author-bio">
+                <div class="author-avatar-large"></div>
+                <div class="author-info">
+                    <h3>Andri Purnomo</h3>
+                    <p>
+                        Frontend Engineer passionate about building scalable, real-time applications.
+                        Currently exploring system design and WebSocket technologies.
+                    </p>
+                    <div class="author-social">
+                        <a href="#" class="social-link">GitHub</a>
+                        <a href="#" class="social-link">LinkedIn</a>
+                        <a href="#" class="social-link">Twitter</a>
                     </div>
                 </div>
             </div>
 
+            <!-- Related Posts -->
+            <section class="related-posts">
+                <h2 class="related-title">Related Articles</h2>
+                <div class="related-grid">
+                    <a href="#" class="related-card">
+                        <div class="related-category">Performance</div>
+                        <h3>React Performance Optimization: Beyond React.memo</h3>
+                        <p>Practical strategies for optimizing React applications at scale.</p>
+                    </a>
+                    <a href="#" class="related-card">
+                        <div class="related-category">TypeScript</div>
+                        <h3>Advanced TypeScript Patterns</h3>
+                        <p>Exploring discriminated unions and conditional types.</p>
+                    </a>
+                    <a href="#" class="related-card">
+                        <div class="related-category">Architecture</div>
+                        <h3>Microservices vs Monoliths in 2024</h3>
+                        <p>When to choose which architecture for your next project.</p>
+                    </a>
+                </div>
+            </section>
         </article>
-
-        <!-- Next/Prev Navigation -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
-            <a href="#"
-                class="group border-2 border-black bg-white p-6 shadow-hard hover:shadow-hard-hover hover:-translate-y-1 transition-all">
-                <span class="block text-xs font-mono text-gray-500 mb-2"><- PREVIOUS</span>
-                        <span class="font-bold text-lg group-hover:underline">The State of React Server
-                            Components</span>
-            </a>
-            <a href="#"
-                class="group border-2 border-black bg-white p-6 shadow-hard hover:shadow-hard-hover hover:-translate-y-1 transition-all text-right">
-                <span class="block text-xs font-mono text-gray-500 mb-2">NEXT -></span>
-                <span class="font-bold text-lg group-hover:underline">Optimizing fonts for the web</span>
-            </a>
-        </div>
-
     </main>
 
     <!-- Footer -->
-    <footer class="border-t-4 border-black bg-black text-white py-12 px-8">
-        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-center md:text-left">
-                <div class="font-bold text-2xl mb-2">ANDRI.PURNOMO</div>
-                <div class="font-mono text-xs text-gray-400">
-                    © 2024 // DESIGNED BRUTALLY
-                </div>
-            </div>
-            <div class="flex gap-6 font-bold text-sm">
-                <a href="index.html" class="hover:text-accent-yellow transition-colors">HOME</a>
-                <a href="index.html#work" class="hover:text-accent-yellow transition-colors">WORK</a>
-                <a href="mailto:hello@andripurnomo.com" class="hover:text-accent-yellow transition-colors">CONTACT</a>
-            </div>
-        </div>
+    <footer>
+        <p>&copy; 2024 Andri Purnomo. Crafted with passion and precision.</p>
     </footer>
 
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const height = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrolled / height) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
+
+        // Table of Contents active state
+        const sections = document.querySelectorAll('section[id]');
+        const tocItems = document.querySelectorAll('.toc-item');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tocItems.forEach(item => {
+                item.classList.remove('active');
+                const link = item.querySelector('.toc-link');
+                if (link.getAttribute('href').slice(1) === current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Copy code functionality
+        function copyCode(btn) {
+            const codeBlock = btn.closest('.code-block');
+            const code = codeBlock.querySelector('code').innerText;
+
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll for TOC links
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
 </body>
 
 </html>
