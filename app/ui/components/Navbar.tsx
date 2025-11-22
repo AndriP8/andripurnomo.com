@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 export const Navbar = () => {
   const pathName = usePathname();
   const isHomePage = pathName === '/';
+  const isBlogPage = pathName.startsWith('/blog');
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-accent-yellow border-b-2 border-black h-14 flex items-center justify-between px-4 md:px-8">
@@ -24,25 +25,29 @@ export const Navbar = () => {
               CONTACT_
             </a>
           </>
+        ) : isBlogPage ? (
+          <>
+            <Link href="/#work" className="hover:bg-black hover:text-white px-2 py-1 transition-colors">
+              WORK_
+            </Link>
+            <Link href="/blog" className="bg-black text-white px-2 py-1 transition-colors">
+              WRITING_
+            </Link>
+            <Link href="/#contact" className="hover:bg-black hover:text-white px-2 py-1 transition-colors">
+              CONTACT_
+            </Link>
+          </>
         ) : (
           <>
             <Link
               href="/"
-              className={
-                pathName === '/'
-                  ? 'bg-black text-white px-2 py-1 transition-colors'
-                  : 'hover:bg-black hover:text-white px-2 py-1 transition-colors'
-              }
+              className="hover:bg-black hover:text-white px-2 py-1 transition-colors"
             >
               HOME_
             </Link>
             <Link
               href="/blog"
-              className={
-                pathName.startsWith('/blog')
-                  ? 'bg-black text-white px-2 py-1 transition-colors'
-                  : 'hover:bg-black hover:text-white px-2 py-1 transition-colors'
-              }
+              className="hover:bg-black hover:text-white px-2 py-1 transition-colors"
             >
               BLOG_
             </Link>
