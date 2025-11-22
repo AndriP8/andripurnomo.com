@@ -99,6 +99,88 @@ export default async function Page() {
           </div>
         </header>
 
+        {/* Work Section */}
+        <section id="work" className="mb-24">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="bg-black text-white px-4 py-2 text-2xl font-bold inline-block transform -rotate-2">
+              SELECTED_WORK
+            </h2>
+            <div className="h-1 flex-grow bg-black ml-4"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Project 1 */}
+            <a
+              href="https://github.com/andrip8"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="group neo-card bg-bg-card border-2 border-black p-6 shadow-hard flex flex-col h-full"
+            >
+              <div className="border-b-2 border-black pb-4 mb-6 flex justify-between items-start">
+                <span className="bg-accent-blue border-2 border-black px-2 py-1 text-xs font-bold uppercase">
+                  Frontend
+                </span>
+                <span className="text-2xl group-hover:rotate-45 transition-transform duration-200">↗</span>
+              </div>
+              <h3 className="font-sans text-4xl font-bold mb-2">WEB APPS</h3>
+              <p className="mb-8 text-sm font-medium leading-relaxed">
+                Building performant and scalable web applications using modern frontend technologies and best practices.
+              </p>
+              <div className="mt-auto flex gap-2 flex-wrap">
+                <span className="text-xs border border-black px-2 py-1 bg-gray-100">React</span>
+                <span className="text-xs border border-black px-2 py-1 bg-gray-100">TypeScript</span>
+                <span className="text-xs border border-black px-2 py-1 bg-gray-100">Next.js</span>
+              </div>
+            </a>
+
+            {/* Project 2 */}
+            <a
+              href="https://github.com/andrip8"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="group neo-card bg-bg-card border-2 border-black p-6 shadow-hard flex flex-col h-full"
+            >
+              <div className="border-b-2 border-black pb-4 mb-6 flex justify-between items-start">
+                <span className="bg-accent-pink border-2 border-black px-2 py-1 text-xs font-bold uppercase">
+                  Development
+                </span>
+                <span className="text-2xl group-hover:rotate-45 transition-transform duration-200">↗</span>
+              </div>
+              <h3 className="font-sans text-4xl font-bold mb-2">OPEN SOURCE</h3>
+              <p className="mb-8 text-sm font-medium leading-relaxed">
+                Contributing to open source projects and sharing knowledge with the developer community.
+              </p>
+              <div className="mt-auto flex gap-2 flex-wrap">
+                <span className="text-xs border border-black px-2 py-1 bg-gray-100">GitHub</span>
+                <span className="text-xs border border-black px-2 py-1 bg-gray-100">Collaboration</span>
+              </div>
+            </a>
+
+            {/* Project 3 (Full Width) */}
+            <a
+              href="/blog"
+              className="group neo-card md:col-span-2 bg-accent-yellow border-2 border-black p-6 shadow-hard flex flex-col md:flex-row gap-8 items-center"
+            >
+              <div className="flex-1">
+                <div className="border-b-2 border-black border-dashed pb-4 mb-4">
+                  <span className="bg-white border-2 border-black px-2 py-1 text-xs font-bold uppercase">
+                    Content
+                  </span>
+                </div>
+                <h3 className="font-sans text-4xl font-bold mb-4">TECH BLOG</h3>
+                <p className="font-medium">
+                  Writing about frontend development, performance optimization, and modern web technologies.
+                </p>
+              </div>
+              <div className="bg-black text-white p-4 font-mono text-xs w-full md:w-64 border-2 border-white md:border-black">
+                &gt; npm run blog<br />
+                &gt; Building knowledge...<br />
+                &gt; Sharing experience...
+              </div>
+            </a>
+          </div>
+        </section>
+
         {/* Writing Section (Table Style) */}
         <section id="writing" className="mb-24">
           <div className="flex items-center justify-between mb-8">
