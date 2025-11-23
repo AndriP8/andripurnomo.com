@@ -1,58 +1,54 @@
-import { getBlogs } from '@lib/data';
-import { formatDate } from '@lib/utils';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import { TimeDisplay } from './TimeDisplay';
+import { getBlogs } from "@lib/data";
+import { formatDate } from "@lib/utils";
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { TimeDisplay } from "./TimeDisplay";
 
 export const metadata = {
   description:
     "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
-  keywords: [
-    'Andri Purnomo',
-    'Frontend Engineer',
-    'Frontend blogs',
-    'Frontend articles',
-  ],
-  authors: [{ name: 'Andri Purnomo' }],
+  keywords: ["Andri Purnomo", "Frontend Engineer", "Frontend blogs", "Frontend articles"],
+  authors: [{ name: "Andri Purnomo" }],
   alternates: {
-    canonical: '/',
+    canonical: "/",
   },
   icons: [
     {
-      rel: 'icon',
-      type: 'image/png',
-      url: '/images/favicons/16x16.png',
-      sizes: '16x16',
+      rel: "icon",
+      type: "image/png",
+      url: "/images/favicons/16x16.png",
+      sizes: "16x16",
     },
     {
-      rel: 'icon',
-      type: 'image/png',
-      url: '/images/favicons/32x32.png',
-      sizes: '32x32',
+      rel: "icon",
+      type: "image/png",
+      url: "/images/favicons/32x32.png",
+      sizes: "32x32",
     },
     {
-      rel: 'apple-touch-icon',
-      url: '/images/favicons/16x16.png.png',
-      sizes: '180x180',
+      rel: "apple-touch-icon",
+      url: "/images/favicons/16x16.png.png",
+      sizes: "180x180",
     },
   ],
 
   openGraph: {
-    title: 'Andri Purnomo',
-    siteName: 'Andri Purnomo',
+    title: "Andri Purnomo",
+    siteName: "Andri Purnomo",
     description:
       "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
-    url: 'https://www.andripurnomo.com',
+    url: "https://www.andripurnomo.com",
     images:
-      'https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg',
+      "https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg",
   },
   twitter: {
-    title: 'Andri Purnomo',
+    title: "Andri Purnomo",
     description:
       "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
-    site: 'https://www.andripurnomo.com',
+    site: "https://www.andripurnomo.com",
     images:
-      'https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg',
+      "https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg",
   },
 } satisfies Metadata;
 
@@ -65,9 +61,9 @@ export default async function Page() {
       <div className="mt-14 border-b-2 border-black bg-black text-white py-3 overflow-hidden">
         <div className="marquee-container">
           <div className="marquee-content font-sans font-bold uppercase tracking-widest text-sm">
-            Software Engineer /// Frontend Developer /// React /// TypeScript /// NextJS /// Open Source
-            /// Design Systems /// Software Engineer /// Frontend Developer /// React /// TypeScript ///
-            NextJS /// Open Source /// Design Systems ///
+            Software Engineer /// Frontend Developer /// React /// TypeScript /// NextJS /// Open
+            Source /// Design Systems /// Software Engineer /// Frontend Developer /// React ///
+            TypeScript /// NextJS /// Open Source /// Design Systems ///
           </div>
         </div>
       </div>
@@ -81,7 +77,9 @@ export default async function Page() {
           </div>
 
           <h1 className="font-sans text-6xl md:text-8xl font-black leading-[0.9] mb-8 uppercase">
-            Andri<br />Purnomo
+            Andri
+            <br />
+            Purnomo
           </h1>
 
           <div className="grid md:grid-cols-[2fr_1fr] gap-8 border-t-2 border-black pt-8">
@@ -120,15 +118,20 @@ export default async function Page() {
                 <span className="bg-accent-blue border-2 border-black px-2 py-1 text-xs font-bold uppercase">
                   Frontend
                 </span>
-                <span className="text-2xl group-hover:rotate-45 transition-transform duration-200">↗</span>
+                <span className="text-2xl group-hover:rotate-45 transition-transform duration-200">
+                  ↗
+                </span>
               </div>
               <h3 className="font-sans text-4xl font-bold mb-2">WEB APPS</h3>
               <p className="mb-8 text-sm font-medium leading-relaxed">
-                Building performant and scalable web applications using modern frontend technologies and best practices.
+                Building performant and scalable web applications using modern frontend technologies
+                and best practices.
               </p>
               <div className="mt-auto flex gap-2 flex-wrap">
                 <span className="text-xs border border-black px-2 py-1 bg-gray-100">React</span>
-                <span className="text-xs border border-black px-2 py-1 bg-gray-100">TypeScript</span>
+                <span className="text-xs border border-black px-2 py-1 bg-gray-100">
+                  TypeScript
+                </span>
                 <span className="text-xs border border-black px-2 py-1 bg-gray-100">Next.js</span>
               </div>
             </a>
@@ -144,15 +147,20 @@ export default async function Page() {
                 <span className="bg-accent-pink border-2 border-black px-2 py-1 text-xs font-bold uppercase">
                   Development
                 </span>
-                <span className="text-2xl group-hover:rotate-45 transition-transform duration-200">↗</span>
+                <span className="text-2xl group-hover:rotate-45 transition-transform duration-200">
+                  ↗
+                </span>
               </div>
               <h3 className="font-sans text-4xl font-bold mb-2">OPEN SOURCE</h3>
               <p className="mb-8 text-sm font-medium leading-relaxed">
-                Contributing to open source projects and sharing knowledge with the developer community.
+                Contributing to open source projects and sharing knowledge with the developer
+                community.
               </p>
               <div className="mt-auto flex gap-2 flex-wrap">
                 <span className="text-xs border border-black px-2 py-1 bg-gray-100">GitHub</span>
-                <span className="text-xs border border-black px-2 py-1 bg-gray-100">Collaboration</span>
+                <span className="text-xs border border-black px-2 py-1 bg-gray-100">
+                  Collaboration
+                </span>
               </div>
             </a>
 
@@ -169,12 +177,15 @@ export default async function Page() {
                 </div>
                 <h3 className="font-sans text-4xl font-bold mb-4">TECH BLOG</h3>
                 <p className="font-medium">
-                  Writing about frontend development, performance optimization, and modern web technologies.
+                  Writing about frontend development, performance optimization, and modern web
+                  technologies.
                 </p>
               </div>
               <div className="bg-black text-white p-4 font-mono text-xs w-full md:w-64 border-2 border-white md:border-black">
-                &gt; npm run blog<br />
-                &gt; Building knowledge...<br />
+                &gt; npm run blog
+                <br />
+                &gt; Building knowledge...
+                <br />
                 &gt; Sharing experience...
               </div>
             </a>
@@ -199,7 +210,11 @@ export default async function Page() {
 
             {/* Rows */}
             {blogs.map((blog, index) => {
-              const colors = ['hover:bg-accent-blue', 'hover:bg-accent-pink', 'hover:bg-accent-yellow'];
+              const colors = [
+                "hover:bg-accent-blue",
+                "hover:bg-accent-pink",
+                "hover:bg-accent-yellow",
+              ];
               const colorClass = colors[index % colors.length];
               const isLast = index === blogs.length - 1;
 
@@ -208,7 +223,7 @@ export default async function Page() {
                   key={blog.slug}
                   href={`/blog/${blog.slug}`}
                   className={`grid grid-cols-[1fr_auto] md:grid-cols-[1fr_100px] gap-4 p-4 ${
-                    !isLast ? 'border-b-2 border-black' : ''
+                    !isLast ? "border-b-2 border-black" : ""
                   } ${colorClass} transition-colors items-center group`}
                 >
                   <div className="font-bold group-hover:underline">{blog.entry.title}</div>
