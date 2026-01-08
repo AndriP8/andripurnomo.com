@@ -1,10 +1,10 @@
-import { DocumentRenderer } from '@keystatic/core/renderer';
-import { getBlogData, getBlogSlugs } from '@lib/data';
-import { formatDate } from '@lib/utils';
-import { TwitterEmbed, YouTubeEmbed } from '@ui/components';
-import { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
+import { DocumentRenderer } from "@keystatic/core/renderer";
+import { getBlogData, getBlogSlugs } from "@lib/data";
+import { formatDate } from "@lib/utils";
+import { TwitterEmbed, YouTubeEmbed } from "@ui/components";
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 
 type Props = {
   params: { slug: string };
@@ -56,33 +56,17 @@ export default async function Page({ params }: PageProps) {
 
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs text-gray-500 pt-6 border-t-2 border-dashed border-black">
                 <div>
-                  PUBLISHED: <span className="text-black font-bold">{formatDate(blog.createdAt).toUpperCase()}</span>
+                  PUBLISHED:{" "}
+                  <span className="text-black font-bold">
+                    {formatDate(blog.createdAt).toUpperCase()}
+                  </span>
                 </div>
                 <div>
-                  READ TIME: <span className="text-black font-bold">{blog.timeToRead} MIN READ</span>
+                  READ TIME:{" "}
+                  <span className="text-black font-bold">{blog.timeToRead} MIN READ</span>
                 </div>
               </div>
             </div>
-
-            {/* Cover Image */}
-            {blog.cover && (
-              <div className="border-b-2 border-black">
-                <Image
-                  src={`/images/blogs/${params.slug}/cover/resource.jpg`}
-                  alt={blog.cover.alt ?? ''}
-                  width={1000}
-                  height={600}
-                  className="w-full h-auto object-cover"
-                  priority
-                />
-                <div className="p-4 bg-gray-100 text-xs font-mono">
-                  Photo by{' '}
-                  <a href={blog.cover.ownerLink ?? ''} target="_blank" className="underline font-bold">
-                    {blog.cover.owner}
-                  </a>
-                </div>
-              </div>
-            )}
 
             {/* Article Body */}
             <div className="p-8 md:p-12 prose max-w-none bg-white font-sans text-black break-word-blog-content">
@@ -92,7 +76,7 @@ export default async function Page({ params }: PageProps) {
                   componentBlocks={{
                     youtubeEmbed: (props) => <YouTubeEmbed youtubeLink={props.youtubeLink} />,
                     twitterEmbed: (props) => {
-                      const tweetId = props.tweet.split('/status/')[1].split('?')[0];
+                      const tweetId = props.tweet.split("/status/")[1].split("?")[0];
                       return <TwitterEmbed tweetId={tweetId} />;
                     },
                     image: (props) => {
@@ -121,8 +105,8 @@ export default async function Page({ params }: PageProps) {
                 <div>
                   <h3 className="font-bold text-xl mb-2">WRITTEN BY ANDRI PURNOMO</h3>
                   <p className="font-mono text-sm mb-4 max-w-lg">
-                    Frontend Engineer specializing in React, TypeScript, and NextJS. Passionate about building
-                    performant web applications and sharing knowledge.
+                    Frontend Engineer specializing in React, TypeScript, and NextJS. Passionate
+                    about building performant web applications and sharing knowledge.
                   </p>
                   <a
                     href="https://twitter.com/Andrii_purnomo"

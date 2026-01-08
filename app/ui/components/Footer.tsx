@@ -1,14 +1,19 @@
-'use client';
+"use client";
 
 export const Footer = () => {
   const yearNow = new Date().getFullYear();
 
   return (
-    <footer id="contact" className="border-t-4 border-black pt-12 max-w-5xl mx-auto px-4 md:px-8 pb-12">
+    <footer
+      id="contact"
+      className="border-t-4 border-black pt-12 max-w-5xl mx-auto px-4 md:px-8 pb-12"
+    >
       <div className="grid md:grid-cols-2 gap-12">
         <div className="bg-black text-white p-8 shadow-[-8px_-8px_0px_0px_rgba(150,150,150,1)]">
           <h2 className="text-5xl font-sans font-bold mb-6 uppercase">
-            Let&apos;s<br />Build.
+            Let&apos;s
+            <br />
+            Build.
           </h2>
           <p className="mb-8 font-mono text-sm">
             Open for freelance opportunities and chaotic good ideas.

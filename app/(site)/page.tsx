@@ -2,6 +2,7 @@ import { getBlogs } from "@lib/data";
 import { formatDate } from "@lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ReactNode } from "react";
 
 import { TimeDisplay } from "./TimeDisplay";
 
@@ -51,6 +52,62 @@ export const metadata = {
       "https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg",
   },
 } satisfies Metadata;
+
+type Project = {
+  category: string;
+  categoryColor: string;
+  title: string;
+  description: string;
+  tags?: string[];
+  href: string;
+  isExternal?: boolean;
+  variant: "default" | "full";
+  terminalContent?: ReactNode;
+};
+
+const PROJECTS: Project[] = [
+  {
+    category: "Frontend",
+    categoryColor: "bg-accent-blue",
+    title: "WEB APPS",
+    description:
+      "Building performant and scalable web applications using modern frontend technologies and best practices.",
+    tags: ["React", "TypeScript", "Next.js"],
+    href: "https://github.com/andrip8",
+    isExternal: true,
+    variant: "default",
+  },
+  {
+    category: "Development",
+    categoryColor: "bg-accent-pink",
+    title: "OPEN SOURCE",
+    description:
+      "Contributing to open source projects and sharing knowledge with the developer community.",
+    tags: ["GitHub", "Collaboration"],
+    href: "https://github.com/andrip8",
+    isExternal: true,
+    variant: "default",
+  },
+  {
+    category: "Content",
+    categoryColor: "bg-white",
+    title: "TECH BLOG",
+    description:
+      "Writing about frontend development, performance optimization, and modern web technologies.",
+    href: "/blog",
+    isExternal: false,
+    variant: "full",
+    terminalContent: (
+      <>
+        &gt; npm run blog
+        <br />
+        &gt; Building knowledge...
+        <br />
+        &gt; Sharing experience...
+      </>
+    ),
+  },
+];
 
 export default async function Page() {
   const blogs = await getBlogs(3);
@@ -107,88 +164,67 @@ export default async function Page() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Project 1 */}
-            <a
-              href="https://github.com/andrip8"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="group neo-card bg-bg-card border-2 border-black p-6 shadow-hard flex flex-col h-full"
-            >
-              <div className="border-b-2 border-black pb-4 mb-6 flex justify-between items-start">
-                <span className="bg-accent-blue border-2 border-black px-2 py-1 text-xs font-bold uppercase">
-                  Frontend
-                </span>
-                <span className="text-2xl group-hover:rotate-45 transition-transform duration-200">
-                  ↗
-                </span>
-              </div>
-              <h3 className="font-sans text-4xl font-bold mb-2">WEB APPS</h3>
-              <p className="mb-8 text-sm font-medium leading-relaxed">
-                Building performant and scalable web applications using modern frontend technologies
-                and best practices.
-              </p>
-              <div className="mt-auto flex gap-2 flex-wrap">
-                <span className="text-xs border border-black px-2 py-1 bg-gray-100">React</span>
-                <span className="text-xs border border-black px-2 py-1 bg-gray-100">
-                  TypeScript
-                </span>
-                <span className="text-xs border border-black px-2 py-1 bg-gray-100">Next.js</span>
-              </div>
-            </a>
-
-            {/* Project 2 */}
-            <a
-              href="https://github.com/andrip8"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="group neo-card bg-bg-card border-2 border-black p-6 shadow-hard flex flex-col h-full"
-            >
-              <div className="border-b-2 border-black pb-4 mb-6 flex justify-between items-start">
-                <span className="bg-accent-pink border-2 border-black px-2 py-1 text-xs font-bold uppercase">
-                  Development
-                </span>
-                <span className="text-2xl group-hover:rotate-45 transition-transform duration-200">
-                  ↗
-                </span>
-              </div>
-              <h3 className="font-sans text-4xl font-bold mb-2">OPEN SOURCE</h3>
-              <p className="mb-8 text-sm font-medium leading-relaxed">
-                Contributing to open source projects and sharing knowledge with the developer
-                community.
-              </p>
-              <div className="mt-auto flex gap-2 flex-wrap">
-                <span className="text-xs border border-black px-2 py-1 bg-gray-100">GitHub</span>
-                <span className="text-xs border border-black px-2 py-1 bg-gray-100">
-                  Collaboration
-                </span>
-              </div>
-            </a>
-
-            {/* Project 3 (Full Width) */}
-            <a
-              href="/blog"
-              className="group neo-card md:col-span-2 bg-accent-yellow border-2 border-black p-6 shadow-hard flex flex-col md:flex-row gap-8 items-center"
-            >
-              <div className="flex-1">
-                <div className="border-b-2 border-black border-dashed pb-4 mb-4">
-                  <span className="bg-white border-2 border-black px-2 py-1 text-xs font-bold uppercase">
-                    Content
-                  </span>
-                </div>
-                <h3 className="font-sans text-4xl font-bold mb-4">TECH BLOG</h3>
-                <p className="font-medium">
-                  Writing about frontend development, performance optimization, and modern web
-                  technologies.
-                </p>
-              </div>
-              <div className="bg-black text-white p-4 font-mono text-xs w-full md:w-64 border-2 border-white md:border-black">
-                &gt; npm run blog
-                <br />
-                &gt; Building knowledge...
-                <br />
-                &gt; Sharing experience...
-              </div>
-            </a>
+            {PROJECTS.map((project, index) => (
+              <a
+                key={index}
+                href={project.href}
+                target={project.isExternal ? "_blank" : undefined}
+                rel={project.isExternal ? "noreferrer noopener" : undefined}
+                className={`group neo-card border-2 border-black p-6 shadow-hard ${
+                  project.variant === "full"
+                    ? "md:col-span-2 bg-accent-yellow flex flex-col md:flex-row gap-8 items-center"
+                    : "bg-bg-card flex flex-col h-full"
+                }`}
+              >
+                {project.variant === "default" ? (
+                  <>
+                    <div className="border-b-2 border-black pb-4 mb-6 flex justify-between items-start">
+                      <span
+                        className={`${project.categoryColor} border-2 border-black px-2 py-1 text-xs font-bold uppercase`}
+                      >
+                        {project.category}
+                      </span>
+                      <span className="text-2xl group-hover:rotate-45 transition-transform duration-200">
+                        ↗
+                      </span>
+                    </div>
+                    <h3 className="font-sans text-4xl font-bold mb-2">{project.title}</h3>
+                    <p className="mb-8 text-sm font-medium leading-relaxed">
+                      {project.description}
+                    </p>
+                    <div className="mt-auto flex gap-2 flex-wrap">
+                      {project.tags?.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs border border-black px-2 py-1 bg-gray-100"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex-1">
+                      <div className="border-b-2 border-black border-dashed pb-4 mb-4">
+                        <span
+                          className={`${project.categoryColor} border-2 border-black px-2 py-1 text-xs font-bold uppercase`}
+                        >
+                          {project.category}
+                        </span>
+                      </div>
+                      <h3 className="font-sans text-4xl font-bold mb-4">{project.title}</h3>
+                      <p className="font-medium">{project.description}</p>
+                    </div>
+                    {project.terminalContent && (
+                      <div className="bg-black text-white p-4 font-mono text-xs w-full md:w-64 border-2 border-white md:border-black">
+                        {project.terminalContent}
+                      </div>
+                    )}
+                  </>
+                )}
+              </a>
+            ))}
           </div>
         </section>
 
@@ -203,7 +239,7 @@ export default async function Page() {
 
           <div className="bg-bg-card border-2 border-black shadow-hard">
             {/* Header */}
-            <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1fr_100px] gap-4 p-4 border-b-2 border-black bg-gray-100 font-bold text-xs uppercase">
+            <div className="flex justify-between gap-4 p-4 border-b-2 border-black bg-gray-100 font-bold text-xs uppercase">
               <div>Title</div>
               <div className="text-right">Date</div>
             </div>
@@ -222,7 +258,7 @@ export default async function Page() {
                 <Link
                   key={blog.slug}
                   href={`/blog/${blog.slug}`}
-                  className={`grid grid-cols-[1fr_auto] md:grid-cols-[1fr_100px] gap-4 p-4 ${
+                  className={`flex justify-between items-start md:items-center gap-4 p-4 ${
                     !isLast ? "border-b-2 border-black" : ""
                   } ${colorClass} transition-colors items-center group`}
                 >
