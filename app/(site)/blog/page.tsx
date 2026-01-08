@@ -1,10 +1,10 @@
-import { getBlogs } from '@lib/data';
-import { formatDate } from '@lib/utils';
-import { Metadata } from 'next';
-import Link from 'next/link';
+import { getBlogs } from "@lib/data";
+import { formatDate } from "@lib/utils";
+import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata = {
-  title: 'Blog',
+  title: "Blog",
 } satisfies Metadata;
 
 export default async function Page() {
@@ -47,10 +47,10 @@ export default async function Page() {
         {/* Posts */}
         {blogs.map((blog, index) => {
           const colors = [
-            'hover:bg-accent-blue',
-            'hover:bg-accent-pink',
-            'hover:bg-accent-yellow',
-            'hover:bg-gray-200',
+            "hover:bg-accent-blue",
+            "hover:bg-accent-pink",
+            "hover:bg-accent-yellow",
+            "hover:bg-gray-200",
           ];
           const colorClass = colors[index % colors.length];
           const isLast = index === blogs.length - 1;
@@ -60,17 +60,17 @@ export default async function Page() {
               key={blog.slug}
               href={`/blog/${blog.slug}`}
               className={`grid grid-cols-1 md:grid-cols-[120px_1fr_120px] gap-2 md:gap-4 p-4 ${
-                !isLast ? 'border-b-2 border-black' : ''
+                !isLast ? "border-b-2 border-black" : ""
               } ${colorClass} transition-colors items-center group`}
             >
               <div className="font-mono text-xs text-gray-500 group-hover:text-black">
-                {formatDate(blog.entry.createdAt)}
+                {formatDate(blog.createdAt)}
               </div>
               <div className="font-bold text-lg md:text-base group-hover:translate-x-2 transition-transform">
-                {blog.entry.title}
+                {blog.title}
               </div>
               <div className="hidden md:block text-right text-xs font-mono">
-                {blog.entry.timeToRead} MIN
+                {blog.timeToRead} MIN
               </div>
             </Link>
           );

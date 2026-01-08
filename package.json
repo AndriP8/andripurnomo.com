@@ -8,16 +8,22 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@keystatic/core": "^0.2.7",
-    "@keystatic/next": "^2.0.1",
+    "@shikijs/rehype": "^3.21.0",
     "@tailwindcss/typography": "^0.5.10",
     "classnames": "^2.3.1",
     "next": "14.2.35",
+    "next-mdx-remote": "^5.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.3.1",
     "react-twitter-embed": "^4.0.4",
-    "tailwind-merge": "^2.2.0"
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-slug": "^6.0.0",
+    "remark-gfm": "^4.0.1",
+    "shiki": "^3.21.0",
+    "tailwind-merge": "^2.2.0",
+    "vfile": "^6.0.3",
+    "vfile-matter": "^5.0.1"
   },
   "devDependencies": {
     "@types/node": "16.11.13",

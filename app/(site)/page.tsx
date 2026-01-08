@@ -262,10 +262,8 @@ export default async function Page() {
                     !isLast ? "border-b-2 border-black" : ""
                   } ${colorClass} transition-colors items-center group`}
                 >
-                  <div className="font-bold group-hover:underline">{blog.entry.title}</div>
-                  <div className="text-right text-xs font-mono">
-                    {formatDate(blog.entry.createdAt)}
-                  </div>
+                  <div className="font-bold group-hover:underline">{blog.title}</div>
+                  <div className="text-right text-xs font-mono">{formatDate(blog.createdAt)}</div>
                 </Link>
               );
             })}

@@ -1,10 +1,14 @@
-import { DocumentRenderer } from "@keystatic/core/renderer";
-import { getBlogData, getBlogSlugs } from "@lib/data";
+import { getBlogData, getBlogSlugs } from "@lib/data/blog";
 import { formatDate } from "@lib/utils";
+import rehypeShiki from "@shikijs/rehype";
 import { TwitterEmbed, YouTubeEmbed } from "@ui/components";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
 
 type Props = {
   params: { slug: string };
@@ -71,15 +75,25 @@ export default async function Page({ params }: PageProps) {
             {/* Article Body */}
             <div className="p-8 md:p-12 prose max-w-none bg-white font-sans text-black break-word-blog-content">
               {blog.content ? (
-                <DocumentRenderer
-                  document={await blog.content()}
-                  componentBlocks={{
-                    youtubeEmbed: (props) => <YouTubeEmbed youtubeLink={props.youtubeLink} />,
-                    twitterEmbed: (props) => {
+                <MDXRemote
+                  source={blog.content}
+                  options={{
+                    mdxOptions: {
+                      remarkPlugins: [remarkGfm],
+                      rehypePlugins: [
+                        rehypeSlug,
+                        [rehypeAutolinkHeadings, { behavior: "wrap" }],
+                        [rehypeShiki, { theme: "github-dark" }],
+                      ],
+                    },
+                  }}
+                  components={{
+                    YouTubeEmbed: (props: any) => <YouTubeEmbed youtubeLink={props.youtubeLink} />,
+                    TwitterEmbed: (props: any) => {
                       const tweetId = props.tweet.split("/status/")[1].split("?")[0];
                       return <TwitterEmbed tweetId={tweetId} />;
                     },
-                    image: (props) => {
+                    Image: (props: any) => {
                       return (
                         <Image
                           src={props.src}
