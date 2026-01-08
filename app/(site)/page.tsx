@@ -1,10 +1,31 @@
+import { SITE_CONFIG } from "@lib/constants";
 import { getBlogs } from "@lib/data";
 import { formatDate } from "@lib/utils";
+import { JsonLd } from "@ui/components";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ReactNode } from "react";
 
 import { TimeDisplay } from "./TimeDisplay";
+
+const homeJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: SITE_CONFIG.name,
+      url: SITE_CONFIG.url,
+      description: SITE_CONFIG.description,
+    },
+    {
+      "@type": "Person",
+      name: SITE_CONFIG.author.name,
+      jobTitle: SITE_CONFIG.author.jobTitle,
+      url: SITE_CONFIG.url,
+      sameAs: [SITE_CONFIG.author.twitter, SITE_CONFIG.author.github],
+    },
+  ],
+};
 
 export const metadata = {
   description:
@@ -29,25 +50,25 @@ export const metadata = {
     },
     {
       rel: "apple-touch-icon",
-      url: "/images/favicons/16x16.png.png",
+      url: "/images/favicons/180x180.png",
       sizes: "180x180",
     },
   ],
 
   openGraph: {
-    title: "Andri Purnomo",
-    siteName: "Andri Purnomo",
+    title: SITE_CONFIG.name,
+    siteName: SITE_CONFIG.name,
     description:
       "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
-    url: "https://www.andripurnomo.com",
+    url: SITE_CONFIG.url,
     images:
       "https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg",
   },
   twitter: {
-    title: "Andri Purnomo",
+    title: SITE_CONFIG.name,
     description:
       "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
-    site: "https://www.andripurnomo.com",
+    site: SITE_CONFIG.url,
     images:
       "https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg",
   },
@@ -114,6 +135,7 @@ export default async function Page() {
 
   return (
     <>
+      <JsonLd data={homeJsonLd} />
       {/* Marquee Banner */}
       <div className="mt-14 border-b-2 border-black bg-black text-white py-3 overflow-hidden">
         <div className="marquee-container">

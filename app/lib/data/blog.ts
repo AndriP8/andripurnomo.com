@@ -7,6 +7,7 @@ const contentDirectory = join(process.cwd(), "content", "blogs");
 
 interface BlogFrontmatter {
   title: string;
+  description: string;
   cover: {
     resource: string;
     owner: string;
@@ -22,6 +23,7 @@ interface BlogFrontmatter {
 export interface BlogData {
   slug: string;
   title: string;
+  description: string;
   cover: BlogFrontmatter["cover"];
   timeToRead: number;
   createdAt: string;
@@ -43,6 +45,7 @@ export async function getBlogData(slug: string): Promise<BlogData | null> {
     return {
       slug,
       title: frontmatter.title,
+      description: frontmatter.description,
       cover: frontmatter.cover,
       timeToRead: frontmatter.timeToRead,
       createdAt: frontmatter.createdAt,

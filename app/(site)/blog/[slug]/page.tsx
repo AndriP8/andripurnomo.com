@@ -1,7 +1,8 @@
+import { SITE_CONFIG } from "@lib/constants";
 import { getBlogData, getBlogSlugs } from "@lib/data/blog";
 import { formatDate } from "@lib/utils";
 import rehypeShiki from "@shikijs/rehype";
-import { TwitterEmbed, YouTubeEmbed } from "@ui/components";
+import { JsonLd, TwitterEmbed, YouTubeEmbed } from "@ui/components";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,8 +18,36 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const blog = await getBlogData(params.slug);
 
+  if (!blog) {
+    return { title: "Blog Post Not Found" };
+  }
+
   return {
-    title: blog?.title,
+    title: blog.title,
+    description: blog.description,
+    alternates: {
+      canonical: `/blog/${params.slug}`,
+    },
+    openGraph: {
+      title: blog.title,
+      description: blog.description,
+      type: "article",
+      publishedTime: blog.createdAt,
+      modifiedTime: blog.updatedAt,
+      authors: [SITE_CONFIG.author.name],
+      // TODO: Update blog cover
+      images: blog.cover.resource.startsWith("http")
+        ? blog.cover.resource
+        : `${SITE_CONFIG.url}/images/blogs/${params.slug}/${blog.cover.resource}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.title,
+      description: blog.description,
+      images: blog.cover.resource.startsWith("http")
+        ? blog.cover.resource
+        : `${SITE_CONFIG.url}/images/blogs/${params.slug}/${blog.cover.resource}`,
+    },
   };
 }
 
@@ -31,10 +60,35 @@ type PageProps = {
 export default async function Page({ params }: PageProps) {
   const blog = await getBlogData(params.slug);
 
+  const blogJsonLd = blog
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: blog.title,
+        description: blog.description,
+        datePublished: blog.createdAt,
+        dateModified: blog.updatedAt || blog.createdAt,
+        author: {
+          "@type": "Person",
+          name: SITE_CONFIG.author.name,
+          url: SITE_CONFIG.url,
+        },
+        publisher: {
+          "@type": "Person",
+          name: SITE_CONFIG.author.name,
+        },
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": `${SITE_CONFIG.url}/blog/${params.slug}`,
+        },
+      }
+    : null;
+
   return (
     <main className="max-w-4xl mx-auto px-4 md:px-8 pt-28 pb-24">
       {blog ? (
         <>
+          {blogJsonLd && <JsonLd data={blogJsonLd} />}
           {/* Back Navigation */}
           <div className="mb-8">
             <Link

@@ -1,12 +1,13 @@
+import { SITE_CONFIG } from "@lib/constants";
 import { Footer, Navbar } from "@ui/components";
 import { Metadata } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export const metadata = {
-  metadataBase: new URL("https://www.andripurnomo.com"),
+  metadataBase: new URL(SITE_CONFIG.url),
   title: {
-    template: "%s | Andri Purnomo",
-    default: "Andri Purnomo",
+    template: `%s | ${SITE_CONFIG.name}`,
+    default: SITE_CONFIG.name,
   },
 } satisfies Metadata;
 
