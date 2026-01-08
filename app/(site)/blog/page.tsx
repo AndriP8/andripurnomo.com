@@ -1,5 +1,8 @@
 import { getBlogs } from "@lib/data";
 import { formatDate } from "@lib/utils";
+import { BlogSearch } from "@ui/blog/BlogSearch";
+import { BlogTags } from "@ui/blog/BlogTags";
+import { ClearFilters } from "@ui/blog/ClearFilters";
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -7,8 +10,15 @@ export const metadata = {
   title: "Blog",
 } satisfies Metadata;
 
-export default async function Page() {
-  const blogs = await getBlogs();
+interface PageProps {
+  searchParams: Promise<{ q?: string; tag?: string }>;
+}
+
+export default async function Page({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const blogs = await getBlogs(undefined, params.q, params.tag);
+
+  const allTags = Array.from(new Set(blogs.flatMap((blog) => blog.tags))).sort();
 
   return (
     <main className="max-w-5xl mx-auto px-4 md:px-8 pt-28 pb-24">
@@ -26,14 +36,38 @@ export default async function Page() {
         </div>
 
         {/* Search Filter */}
-        <div className="w-full md:w-auto bg-white border-2 border-black p-1 shadow-hard-sm">
-          <input
-            type="text"
-            placeholder="SEARCH_LOGS..."
-            className="w-full md:w-64 bg-gray-100 border border-black px-3 py-2 font-mono text-sm focus:outline-none focus:bg-accent-pink placeholder-gray-500"
-          />
-        </div>
+        <BlogSearch />
       </header>
+
+      {/* Active Filters */}
+      {(params.q || params.tag) && (
+        <div className="mb-6 flex flex-wrap items-center gap-3">
+          <span className="text-sm font-mono text-gray-600">Active filters:</span>
+          {params.q && (
+            <span className="px-2 py-1 bg-accent-pink border border-black text-xs font-mono">
+              Search: &quot;{params.q}&quot;
+            </span>
+          )}
+          {params.tag &&
+            params.tag.split(",").map((tag) => (
+              <span
+                key={tag}
+                className="px-2 py-1 bg-accent-blue border border-black text-xs font-mono"
+              >
+                Tag: #{tag}
+              </span>
+            ))}
+          <ClearFilters />
+        </div>
+      )}
+
+      {/* Tag Filter */}
+      {allTags.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-sm font-mono font-bold mb-3 uppercase">Filter by tag:</h2>
+          <BlogTags tags={allTags} />
+        </div>
+      )}
 
       {/* Archive Table */}
       <section className="bg-bg-card border-2 border-black shadow-hard mb-12">
@@ -45,36 +79,56 @@ export default async function Page() {
         </div>
 
         {/* Posts */}
-        {blogs.map((blog, index) => {
-          const colors = [
-            "hover:bg-accent-blue",
-            "hover:bg-accent-pink",
-            "hover:bg-accent-yellow",
-            "hover:bg-gray-200",
-          ];
-          const colorClass = colors[index % colors.length];
-          const isLast = index === blogs.length - 1;
+        {blogs.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="font-mono text-gray-500">No blogs found matching your filters.</p>
+          </div>
+        ) : (
+          blogs.map((blog, index) => {
+            const colors = [
+              "hover:bg-accent-blue",
+              "hover:bg-accent-pink",
+              "hover:bg-accent-yellow",
+              "hover:bg-gray-200",
+            ];
+            const colorClass = colors[index % colors.length];
+            const isLast = index === blogs.length - 1;
 
-          return (
-            <Link
-              key={blog.slug}
-              href={`/blog/${blog.slug}`}
-              className={`grid grid-cols-1 md:grid-cols-[120px_1fr_120px] gap-2 md:gap-4 p-4 ${
-                !isLast ? "border-b-2 border-black" : ""
-              } ${colorClass} transition-colors items-center group`}
-            >
-              <div className="font-mono text-xs text-gray-500 group-hover:text-black">
-                {formatDate(blog.createdAt)}
+            return (
+              <div
+                key={blog.slug}
+                className={`grid grid-cols-1 md:grid-cols-[120px_1fr_120px] gap-2 md:gap-4 p-4 ${
+                  !isLast ? "border-b-2 border-black" : ""
+                }`}
+              >
+                <div className="font-mono text-xs text-gray-500">{formatDate(blog.createdAt)}</div>
+                <div>
+                  <Link
+                    href={`/blog/${blog.slug}`}
+                    className={`font-bold text-lg md:text-base ${colorClass} transition-all inline-block group-hover:translate-x-2`}
+                  >
+                    {blog.title}
+                  </Link>
+                  {blog.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {blog.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-1.5 py-0.5 text-[10px] font-mono bg-gray-100 border border-gray-300"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="hidden md:block text-right text-xs font-mono">
+                  {blog.timeToRead} MIN
+                </div>
               </div>
-              <div className="font-bold text-lg md:text-base group-hover:translate-x-2 transition-transform">
-                {blog.title}
-              </div>
-              <div className="hidden md:block text-right text-xs font-mono">
-                {blog.timeToRead} MIN
-              </div>
-            </Link>
-          );
-        })}
+            );
+          })
+        )}
       </section>
     </main>
   );

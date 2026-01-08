@@ -6,8 +6,10 @@ cover:
   ownerLink: https://unsplash.com/@squarefilms
   alt: Man with hard hat operating drill press
 timeToRead: 7
-createdAt: '2024-06-23'
+createdAt: "2024-06-23"
+tags: ["react", "tanstack-query", "state-management", "data-fetching"]
 ---
+
 Tanstack Query is a popular library for managing asynchronous data fetching, caching, and synchronization in web
 applications. It is particularly useful with frameworks like React, Solid, Vue, Svelte, and Angular. This library
 simplifies data management by offering robust solutions for stale data, caching strategies, background synchronization,
@@ -23,16 +25,12 @@ This is the starting point for React Query, which is to manage the default optio
 value from the `QueryClientProvider` context.
 
 ```javascript
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient } from "@tanstack/react-query";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
 ```
 
@@ -69,7 +67,7 @@ import * as React from 'react'
 export function useBaseQuery(options, Observer, queryClient?) {
   const client = useQueryClient(queryClient)
 	const defaultedOptions = client.defaultQueryOptions(options)
-	
+
 	const [observer] = React.useState(
     () =>
       new Observer(client, defaultedOptions),
@@ -92,22 +90,22 @@ import {  notifyManager } from '@tanstack/query-core'
 
 export function useBaseQuery(options, Observer, queryClient) {
 	const defaultedOptions = client.defaultQueryOptions(options)
-	
+
 	const [observer] = React.useState(
     () =>
       new Observer(client, defaultedOptions),
   )
   const result = observer.getOptimisticResult(defaultedOptions)
-  
+
     React.useSyncExternalStore(
 	    React.useCallback(
 	      (onStoreChange) => {
 	        const unsubscribe = observer.subscribe(notifyManager.batchCalls(onStoreChange))
-	
+
 	        // Update result to make sure we did not miss any query updates
 	        // between creating the observer and subscribing to it.
 	        observer.updateResult()
-	
+
 	        return unsubscribe
 	      },
 	      [observer, isRestoring],
@@ -123,7 +121,7 @@ subscribe(listener: TListener): () => void {
 
     this.onSubscribe()
   }
- 
+
 protected onSubscribe(): void {
     if (this.listeners.size === 1) {
       this.#currentQuery.addObserver(this)
@@ -243,40 +241,37 @@ After the data mutation process is complete, the data will now be returned to th
 
 ```javascript
 // useBaseQuery.ts
-import * as React from 'react'
-import {  notifyManager } from '@tanstack/query-core'
+import * as React from "react";
+import { notifyManager } from "@tanstack/query-core";
 
 export function useBaseQuery(options, Observer, queryClient) {
-	const defaultedOptions = client.defaultQueryOptions(options)
-	
-	const [observer] = React.useState(
-    () =>
-      new Observer(client, defaultedOptions),
-  )
-  
+  const defaultedOptions = client.defaultQueryOptions(options);
+
+  const [observer] = React.useState(() => new Observer(client, defaultedOptions));
+
   // 1. Create initial result
-  const result = observer.getOptimisticResult(defaultedOptions)
-  
+  const result = observer.getOptimisticResult(defaultedOptions);
+
   // 2. Subcribe to execute fetch and mutate state / data
-    React.useSyncExternalStore(
-	    React.useCallback(
-	      (onStoreChange) => {
-	        const unsubscribe = observer.subscribe(notifyManager.batchCalls(onStoreChange))
-	
-	        // Update result to make sure we did not miss any query updates
-	        // between creating the observer and subscribing to it.
-	        observer.updateResult()
-	
-	        return unsubscribe
-	      },
-	      [observer, isRestoring],
+  React.useSyncExternalStore(
+    React.useCallback(
+      (onStoreChange) => {
+        const unsubscribe = observer.subscribe(notifyManager.batchCalls(onStoreChange));
+
+        // Update result to make sure we did not miss any query updates
+        // between creating the observer and subscribing to it.
+        observer.updateResult();
+
+        return unsubscribe;
+      },
+      [observer, isRestoring],
     ),
     () => observer.getCurrentResult(),
     () => observer.getCurrentResult(),
-  )
-  
+  );
+
   // 3. Send state/data to the component
-  return result
+  return result;
 }
 ```
 

@@ -2,12 +2,14 @@
 title: Setup React from scratch 2 - Update webpack for styling and asset
 cover:
   resource: cover/resource.jpg
-  owner: ' Jacob Thomas'
+  owner: " Jacob Thomas"
   ownerLink: https://unsplash.com/@jacob225
   alt: a brown cakes with cherry on the top
 timeToRead: 3
-createdAt: '2023-12-31'
+createdAt: "2023-12-31"
+tags: ["react", "webpack", "css", "tutorial", "setup"]
 ---
+
 In the previous part, we already setup react from scratch, but it is not totally complete, we can’t add CSS files for styling and assets. So therefore in this part, we will finish our webpack configuration
 
 # Update webpack configuration
@@ -41,7 +43,7 @@ pnpm install --save-dev style-loader css-loader
 
 ```javascript
 import React from "react";
-import reactDom from 'react-dom/client';
+import reactDom from "react-dom/client";
 
 // import CSS
 import "./index.css";
@@ -55,7 +57,7 @@ const App = () => {
   );
 };
 
-const root = reactDom.createRoot(document.getElementById('root'));
+const root = reactDom.createRoot(document.getElementById("root"));
 root.render(<App />);
 ```
 

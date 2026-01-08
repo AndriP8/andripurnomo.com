@@ -16,6 +16,7 @@ interface BlogFrontmatter {
   timeToRead: number;
   createdAt: string;
   updatedAt?: string;
+  tags?: string[];
 }
 
 export interface BlogData {
@@ -25,6 +26,7 @@ export interface BlogData {
   timeToRead: number;
   createdAt: string;
   updatedAt?: string;
+  tags: string[];
   content: string;
 }
 
@@ -45,6 +47,7 @@ export async function getBlogData(slug: string): Promise<BlogData | null> {
       timeToRead: frontmatter.timeToRead,
       createdAt: frontmatter.createdAt,
       updatedAt: frontmatter.updatedAt,
+      tags: frontmatter.tags || [],
       content: String(file.value),
     };
   } catch (error) {
@@ -53,14 +56,35 @@ export async function getBlogData(slug: string): Promise<BlogData | null> {
   }
 }
 
-export async function getBlogs(numBlogs?: number): Promise<BlogData[]> {
+export async function getBlogs(
+  numBlogs?: number,
+  searchQuery?: string,
+  tagFilter?: string,
+): Promise<BlogData[]> {
   try {
     const slugs = await getBlogSlugs();
     const blogs = await Promise.all(slugs.map((slug) => getBlogData(slug)));
 
     const validBlogs = blogs.filter((blog): blog is BlogData => blog !== null);
 
-    const sortedBlogs = validBlogs.sort((a, b) => {
+    // Apply filters
+    let filteredBlogs = validBlogs;
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filteredBlogs = filteredBlogs.filter((blog) => blog.title.toLowerCase().includes(query));
+    }
+
+    if (tagFilter) {
+      const selectedTags = tagFilter.split(",").map((t) => t.toLowerCase());
+      filteredBlogs = filteredBlogs.filter((blog) =>
+        selectedTags.every((selectedTag) =>
+          blog.tags.some((blogTag) => blogTag.toLowerCase() === selectedTag),
+        ),
+      );
+    }
+
+    const sortedBlogs = filteredBlogs.sort((a, b) => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
