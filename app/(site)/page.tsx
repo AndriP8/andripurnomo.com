@@ -146,11 +146,6 @@ export default async function Page() {
       <main className="max-w-5xl mx-auto px-4 md:px-8 pt-16">
         {/* Hero Section */}
         <header className="mb-24 bg-bg-card border-2 border-black p-8 md:p-12 shadow-hard relative">
-          {/* Decorative Badge */}
-          <div className="absolute -top-5 -right-5 bg-accent-pink border-2 border-black px-4 py-2 font-bold rotate-6 shadow-hard-sm">
-            AVAILABLE NOW
-          </div>
-
           <h1 className="font-sans text-6xl md:text-8xl font-black leading-[0.9] mb-8 uppercase">
             Andri
             <br />

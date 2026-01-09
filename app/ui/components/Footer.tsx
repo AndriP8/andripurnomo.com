@@ -15,9 +15,7 @@ export const Footer = () => {
             <br />
             Build.
           </h2>
-          <p className="mb-8 font-mono text-sm">
-            Open for freelance opportunities and chaotic good ideas.
-          </p>
+          <p className="mb-8 font-mono text-sm">Open to exploring new opportunities.</p>
           <a
             href="mailto:andri.adrp@gmail.com"
             className="inline-block bg-white text-black border-2 border-transparent hover:border-white hover:bg-black hover:text-white px-6 py-3 font-bold transition-all w-full text-center"
