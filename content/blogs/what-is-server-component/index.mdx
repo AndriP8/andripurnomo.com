@@ -1,13 +1,16 @@
 ---
 title: What is server component
+description: Understand React Server Components (RSC) - the new architecture that allows components to run on the server. Learn about RSC payload, streaming with Suspense, and how it differs from traditional SSR.
 cover:
   resource: cover/resource.jpg
   owner: Nubelson Fernandes
   ownerLink: https://unsplash.com/@nublson
   alt: someone in front of a laptop with a code screen display
 timeToRead: 3
-createdAt: '2024-03-05'
+createdAt: "2024-03-05"
+tags: ["react", "server-components", "next.js", "architecture"]
 ---
+
 React teams introduced a new application architecture called React Server Component(RSC) that can run on the server rather than on the client, this can solve some problems like:
 
 - Server-side data source
@@ -51,21 +54,21 @@ Let's break down that result line by line
 The React server component has been shipped to the Nextjs App router and by default, Next.js uses the React Server Component. This is a simple example of a React Server Component
 
 ```jsx
-import { sql } from '@vercel/postgres';
+import { sql } from "@vercel/postgres";
 
 async function fetchUsers() {
   try {
     return sql`SELECT * FROM users`;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest invoices.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch the latest invoices.");
   }
 }
 
 async function Page() {
-	const users = await fetchUsers()
+  const users = await fetchUsers();
 
-	 return (
+  return (
     <ul>
       {users.map((user) => (
         <li>{user.name}</li>
@@ -73,7 +76,6 @@ async function Page() {
     </ul>
   );
 }
-
 ```
 
 For those who are familiar with React, the code above looks strange, because we can retrieve data from the database in a React component, which is usually done on the server.

@@ -1,13 +1,16 @@
 ---
 title: Setup React from scratch
+description: Learn how to setup a React project from scratch without using CRA or Vite. Configure Webpack for bundling, Babel for JSX transpilation, and understand the fundamentals behind React project setup.
 cover:
   resource: cover/resource.jpg
   owner: Elle Hughes
   ownerLink: https://unsplash.com/@ohforkyes
   alt: flour and eggs to make the dough
 timeToRead: 5
-createdAt: '2023-12-27'
+createdAt: "2023-12-27"
+tags: ["react", "webpack", "babel", "tutorial", "setup"]
 ---
+
 This blog references the [original blog](https://medium.com/@andri_purnomo/setup-react-dari-awal-tanpa-cra-672c9defa8d4) from Medium, this version is just a different platform and has some updates.
 
 Many Frontend engineers that use React commonly use templates like [Create React App](https://create-react-app.dev/docs/getting-started) or [Vite template](https://vitejs.dev/guide/#scaffolding-your-first-vite-project) for init a React project, because with that template we can easily use React without setup anything from scratch, like configuring Babel for javascript code can be transpile to javascript version that browser supported and setup Webpack to bundle all javascript files into one.
@@ -32,8 +35,8 @@ npm init -y
 - Create file `index.jsx` containing a component called `App` and component `App` will be rendered into DOM using the method `render` from function `reactDom.createRoot()`.
 
 ```javascript
-import React from 'react';
-import reactDom from 'react-dom/client';
+import React from "react";
+import reactDom from "react-dom/client";
 
 const App = () => {
   return (
@@ -43,7 +46,7 @@ const App = () => {
   );
 };
 
-const root = reactDom.createRoot(document.getElementById('root'));
+const root = reactDom.createRoot(document.getElementById("root"));
 root.render(<App />);
 ```
 
@@ -138,8 +141,8 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".jsx"],
-  },  
-// new code :  
+  },
+  // new code :
   module: {
     rules: [
       {
@@ -215,8 +218,8 @@ module.exports = {
         ],
       },
     ],
-  },  
-// new code :
+  },
+  // new code :
   plugins: [
     new htmlWebpackPlugin({
       template: path.resolve(__dirname, "./index.html"),

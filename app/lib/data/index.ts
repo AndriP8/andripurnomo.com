@@ -1,2 +1,1 @@
-export * from './blog';
-export * from './reader';
+export * from "./blog";
