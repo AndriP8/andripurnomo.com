@@ -88,24 +88,24 @@ type Project = {
 
 const PROJECTS: Project[] = [
   {
-    category: "Frontend",
+    category: "Full-Stack",
     categoryColor: "bg-accent-blue",
-    title: "WEB APPS",
+    title: "CHAT APP",
     description:
-      "Building performant and scalable web applications using modern frontend technologies and best practices.",
-    tags: ["React", "TypeScript", "Next.js"],
-    href: "https://github.com/andrip8",
+      "Real-time messaging with multi-tab sync, consistent message ordering, and offline capabilities. Built to implement system design patterns in practice.",
+    tags: ["React", "WebSocket", "IndexedDB", "Node.js", "PostgreSQL"],
+    href: "https://chat-app.andripurnomo.com/",
     isExternal: true,
     variant: "default",
   },
   {
-    category: "Development",
+    category: "Full-Stack",
     categoryColor: "bg-accent-pink",
-    title: "OPEN SOURCE",
+    title: "E-COMMERCE",
     description:
-      "Contributing to open source projects and sharing knowledge with the developer community.",
-    tags: ["GitHub", "Collaboration"],
-    href: "https://github.com/andrip8",
+      "Complete shopping experience with cart, checkout, Stripe payments, and multi-currency support. Built to implement system design patterns with focus on performance.",
+    tags: ["Next.js", "PostgreSQL", "Stripe"],
+    href: "https://e-commerce.andripurnomo.com/",
     isExternal: true,
     variant: "default",
   },
@@ -114,7 +114,7 @@ const PROJECTS: Project[] = [
     categoryColor: "bg-white",
     title: "TECH BLOG",
     description:
-      "Writing about frontend development, performance optimization, and modern web technologies.",
+      "Writing about building web applications and how libraries work under the hood. Practical insights, no fluff.",
     href: "/blog",
     isExternal: false,
     variant: "full",
@@ -163,8 +163,8 @@ export default async function Page() {
 
           <div className="grid md:grid-cols-[2fr_1fr] gap-8 border-t-2 border-black pt-8">
             <p className="text-lg md:text-xl font-bold leading-tight">
-              I BUILD DIGITAL PRODUCTS THAT WORK. <br />
-              NO FLUFF, JUST CODE.
+              I BUILD END-TO-END. I SHIP FAST. <br />
+              PRAGMATIC CODE. REAL OUTCOMES.
             </p>
             <div className="text-sm space-y-2">
               <p>Based in Indonesia</p>
