@@ -10,22 +10,19 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Blog",
-  // TODO: Update description
-  description:
-    "Explore articles on frontend development, React, TypeScript, Next.js, and modern web technologies by Andri Purnomo.",
+  description: SITE_CONFIG.blogSite.description,
+  keywords: SITE_CONFIG.blogSite.keywords,
   alternates: {
     canonical: "/blog",
   },
   openGraph: {
     title: `Blog | ${SITE_CONFIG.name}`,
-    description:
-      "Explore articles on frontend development, React, TypeScript, Next.js, and modern web technologies.",
+    description: SITE_CONFIG.blogSite.description,
     url: `${SITE_CONFIG.url}/blog`,
   },
   twitter: {
     title: `Blog | ${SITE_CONFIG.name}`,
-    description:
-      "Explore articles on frontend development, React, TypeScript, Next.js, and modern web technologies.",
+    description: SITE_CONFIG.blogSite.description,
   },
 } satisfies Metadata;
 
@@ -33,8 +30,7 @@ const blogListJsonLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   name: "Blog",
-  // TODO: Update description
-  description: "Articles on frontend development, React, TypeScript, and modern web technologies.",
+  description: SITE_CONFIG.blogSite.description,
   url: `${SITE_CONFIG.url}/blog`,
 };
 

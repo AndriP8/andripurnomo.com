@@ -28,10 +28,9 @@ const homeJsonLd = {
 };
 
 export const metadata = {
-  description:
-    "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
-  keywords: ["Andri Purnomo", "Frontend Engineer", "Frontend blogs", "Frontend articles"],
-  authors: [{ name: "Andri Purnomo" }],
+  description: SITE_CONFIG.description,
+  keywords: SITE_CONFIG.keywords,
+  authors: [{ name: SITE_CONFIG.author.name }],
   alternates: {
     canonical: "/",
   },
@@ -58,19 +57,15 @@ export const metadata = {
   openGraph: {
     title: SITE_CONFIG.name,
     siteName: SITE_CONFIG.name,
-    description:
-      "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
+    description: SITE_CONFIG.description,
     url: SITE_CONFIG.url,
-    images:
-      "https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg",
+    images: SITE_CONFIG.siteImages,
   },
   twitter: {
     title: SITE_CONFIG.name,
-    description:
-      "I'm a Frontend Engineer sharing knowledge on modern frontend development. Explore my home page for a glimpse into my work and delve into the blog for in-depth articles on frontend development.",
+    description: SITE_CONFIG.description,
     site: SITE_CONFIG.url,
-    images:
-      "https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg",
+    images: SITE_CONFIG.siteImages,
   },
 } satisfies Metadata;
 
