@@ -134,10 +134,11 @@ export default async function Page() {
       {/* Marquee Banner */}
       <div className="mt-14 border-b-2 border-black bg-black text-white py-3 overflow-hidden">
         <div className="marquee-container">
-          <div className="marquee-content font-sans font-bold uppercase tracking-widest text-sm">
-            Software Engineer /// Frontend Developer /// React /// TypeScript /// NextJS /// Open
-            Source /// Design Systems /// Software Engineer /// Frontend Developer /// React ///
-            TypeScript /// NextJS /// Open Source /// Design Systems ///
+          <div className="marquee-content font-sans font-bold uppercase tracking-widest text-sm px-2">
+            Full-Stack Engineer /// React /// TypeScript /// Tanstack /// Next.js /// Node.js ///
+            PostgreSQL /// Docker /// System Design /// Core Web Vitals /// Full-Stack Engineer ///
+            Full-Stack Engineer /// React /// TypeScript /// Tanstack /// Next.js /// Node.js ///
+            PostgreSQL /// Docker /// System Design /// Core Web Vitals /// Full-Stack Engineer ///
           </div>
         </div>
       </div>

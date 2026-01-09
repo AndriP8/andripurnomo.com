@@ -48,17 +48,9 @@ export const Footer = () => {
               href="https://www.linkedin.com/in/andri-purnomo/"
               target="_blank"
               rel="noreferrer noopener"
-              className="border-2 border-black p-4 font-bold hover:bg-black hover:text-white transition-colors text-center shadow-hard-sm hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]"
+              className="col-span-2 border-2 border-black p-4 font-bold hover:bg-black hover:text-white transition-colors text-center shadow-hard-sm hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]"
             >
               LINKEDIN
-            </a>
-            <a
-              href="https://www.instagram.com"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="border-2 border-black p-4 font-bold hover:bg-black hover:text-white transition-colors text-center shadow-hard-sm hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]"
-            >
-              INSTAGRAM
             </a>
           </div>
           <div className="mt-8 text-right font-mono text-xs">
