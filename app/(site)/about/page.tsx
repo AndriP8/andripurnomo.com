@@ -4,23 +4,8 @@ import { Metadata } from "next";
 
 export const metadata = {
   title: "About Me",
-  // TODO: Update description
   description:
     "Learn about Andri Purnomo, a Frontend Engineer specializing in React, TypeScript, and Next.js. Discover my journey from Binar Academy to Zero One Group.",
-  alternates: {
-    canonical: "/about",
-  },
-  openGraph: {
-    title: `About Me | ${SITE_CONFIG.name}`,
-    description:
-      "Frontend Engineer specializing in React, TypeScript, and Next.js. Building performant web applications.",
-    url: `${SITE_CONFIG.url}/about`,
-  },
-  twitter: {
-    title: `About Me | ${SITE_CONFIG.name}`,
-    description:
-      "Frontend Engineer specializing in React, TypeScript, and Next.js. Building performant web applications.",
-  },
 } satisfies Metadata;
 
 const aboutJsonLd = {

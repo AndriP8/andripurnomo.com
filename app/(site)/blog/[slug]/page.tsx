@@ -25,12 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: blog.title,
     description: blog.description,
-    alternates: {
-      canonical: `/blog/${params.slug}`,
-    },
     openGraph: {
-      title: blog.title,
-      description: blog.description,
       type: "article",
       publishedTime: blog.createdAt,
       modifiedTime: blog.updatedAt,
@@ -42,8 +37,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: blog.title,
-      description: blog.description,
       images: blog.cover.resource.startsWith("http")
         ? blog.cover.resource
         : `${SITE_CONFIG.url}/images/blogs/${params.slug}/${blog.cover.resource}`,

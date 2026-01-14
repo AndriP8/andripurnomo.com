@@ -23,6 +23,25 @@ export const SITE_CONFIG = {
   },
   siteImages:
     "https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg",
+  favIcons: [
+    {
+      rel: "icon",
+      type: "image/png",
+      url: "/images/favicons/16x16.png",
+      sizes: "16x16",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      url: "/images/favicons/32x32.png",
+      sizes: "32x32",
+    },
+    {
+      rel: "apple-touch-icon",
+      url: "/images/favicons/180x180.png",
+      sizes: "180x180",
+    },
+  ],
   blogSite: {
     description:
       "Technical articles breaking down how React, TypeScript, and Next.js libraries work under the hood. Practical insights, no fluff.",

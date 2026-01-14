@@ -2,7 +2,6 @@ import { SITE_CONFIG } from "@lib/constants";
 import { getBlogs } from "@lib/data";
 import { formatDate } from "@lib/utils";
 import { JsonLd } from "@ui/components";
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -26,48 +25,6 @@ const homeJsonLd = {
     },
   ],
 };
-
-export const metadata = {
-  description: SITE_CONFIG.description,
-  keywords: SITE_CONFIG.keywords,
-  authors: [{ name: SITE_CONFIG.author.name }],
-  alternates: {
-    canonical: "/",
-  },
-  icons: [
-    {
-      rel: "icon",
-      type: "image/png",
-      url: "/images/favicons/16x16.png",
-      sizes: "16x16",
-    },
-    {
-      rel: "icon",
-      type: "image/png",
-      url: "/images/favicons/32x32.png",
-      sizes: "32x32",
-    },
-    {
-      rel: "apple-touch-icon",
-      url: "/images/favicons/180x180.png",
-      sizes: "180x180",
-    },
-  ],
-
-  openGraph: {
-    title: SITE_CONFIG.name,
-    siteName: SITE_CONFIG.name,
-    description: SITE_CONFIG.description,
-    url: SITE_CONFIG.url,
-    images: SITE_CONFIG.siteImages,
-  },
-  twitter: {
-    title: SITE_CONFIG.name,
-    description: SITE_CONFIG.description,
-    site: SITE_CONFIG.url,
-    images: SITE_CONFIG.siteImages,
-  },
-} satisfies Metadata;
 
 type Project = {
   category: string;

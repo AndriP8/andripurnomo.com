@@ -12,18 +12,6 @@ export const metadata = {
   title: "Blog",
   description: SITE_CONFIG.blogSite.description,
   keywords: SITE_CONFIG.blogSite.keywords,
-  alternates: {
-    canonical: "/blog",
-  },
-  openGraph: {
-    title: `Blog | ${SITE_CONFIG.name}`,
-    description: SITE_CONFIG.blogSite.description,
-    url: `${SITE_CONFIG.url}/blog`,
-  },
-  twitter: {
-    title: `Blog | ${SITE_CONFIG.name}`,
-    description: SITE_CONFIG.blogSite.description,
-  },
 } satisfies Metadata;
 
 const blogListJsonLd = {
