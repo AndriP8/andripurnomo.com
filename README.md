@@ -55,7 +55,7 @@ This is a personal portfolio website built with modern web technologies, featuri
 
 ### Prerequisites
 
-- **Node.js** 18.17 or later
+- **Node.js** 20 or later
 - **pnpm** (recommended package manager)
 
 ### Installation
