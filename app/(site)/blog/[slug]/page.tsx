@@ -41,6 +41,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? blog.cover.resource
         : `${SITE_CONFIG.url}/images/blogs/${params.slug}/${blog.cover.resource}`,
     },
+    alternates: {
+      canonical: `/blog/${params.slug}`,
+    },
   };
 }
 

@@ -18,10 +18,31 @@ const homeJsonLd = {
     },
     {
       "@type": "Person",
+      "@id": `${SITE_CONFIG.url}/#person`,
       name: SITE_CONFIG.author.name,
+      givenName: "Andri",
+      familyName: "Purnomo",
       jobTitle: SITE_CONFIG.author.jobTitle,
       url: SITE_CONFIG.url,
-      sameAs: [SITE_CONFIG.author.twitter, SITE_CONFIG.author.github],
+      image: SITE_CONFIG.siteImages,
+      nationality: {
+        "@type": "Country",
+        name: "Indonesia",
+      },
+      knowsAbout: [
+        "React",
+        "TypeScript",
+        "Next.js",
+        "Node.js",
+        "PostgreSQL",
+        "WebSocket",
+        "System Design",
+      ],
+      sameAs: [
+        SITE_CONFIG.author.twitter,
+        SITE_CONFIG.author.github,
+        SITE_CONFIG.author.linkedin,
+      ],
     },
   ],
 };

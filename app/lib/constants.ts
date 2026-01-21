@@ -2,7 +2,7 @@ export const SITE_CONFIG = {
   name: "Andri Purnomo",
   url: "https://www.andripurnomo.com",
   description:
-    "Full-stack engineer shipping production apps: real-time chat with WebSocket, e-commerce with Stripe. Writing about how React, TypeScript libraries work under the hood.",
+    "Andri Purnomo is a full-stack engineer shipping production apps: real-time chat with WebSocket, e-commerce with Stripe. Writing about how React, TypeScript libraries work under the hood.",
   keywords: [
     "Andri Purnomo",
     "Full-stack Engineer",
@@ -17,9 +17,10 @@ export const SITE_CONFIG = {
   ],
   author: {
     name: "Andri Purnomo",
-    jobTitle: "Frontend Engineer",
+    jobTitle: "Full-Stack Engineer",
     twitter: "https://twitter.com/Andrii_purnomo",
     github: "https://github.com/andrip8",
+    linkedin: "https://www.linkedin.com/in/andri-purnomo/",
   },
   siteImages:
     "https://res.cloudinary.com/dutqd1aca/image/upload/v1718890839/personal/l5uomtofb9mlblxyg035.jpg",

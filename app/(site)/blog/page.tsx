@@ -12,6 +12,9 @@ export const metadata = {
   title: "Blog",
   description: SITE_CONFIG.blogSite.description,
   keywords: SITE_CONFIG.blogSite.keywords,
+  alternates: {
+    canonical: "/blog",
+  },
 } satisfies Metadata;
 
 const blogListJsonLd = {

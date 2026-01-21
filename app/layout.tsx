@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   },
   icons: SITE_CONFIG.favIcons,
   alternates: {
-    canonical: "./",
+    canonical: "/",
   },
   robots: {
     index: true,
