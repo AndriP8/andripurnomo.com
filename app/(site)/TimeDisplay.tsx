@@ -7,7 +7,7 @@ export const TimeDisplay = () => {
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+      const timeString = now.toLocaleTimeString('en-US', { hour12: false, timeZone: 'Asia/Jakarta' });
       setTime(timeString);
     };
 
