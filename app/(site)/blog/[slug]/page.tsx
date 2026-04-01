@@ -44,7 +44,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `/blog/${params.slug}`,
     },
-    authors: [{ name: "Andri Purnomo, Claude AI" }],
   };
 }
 
