@@ -83,6 +83,28 @@ const PROJECTS: Project[] = [
     variant: "default",
   },
   {
+    category: "Chrome Extension",
+    categoryColor: "bg-accent-yellow",
+    title: "EXPLAINA",
+    description:
+      "Context-aware Chrome extension that analyzes surrounding text to explain highlighted terms in real-time. Built with real-time SSE streaming, local caching, and decoupled state management.",
+    tags: ["TypeScript", "Chrome Extension", "Vitest"],
+    href: "https://chromewebstore.google.com/detail/kkfojaghlgdedbeebfkgihjkjfomngkp?utm_source=item-share-cb",
+    isExternal: true,
+    variant: "default",
+  },
+  {
+    category: "Full-Stack",
+    categoryColor: "bg-accent-blue",
+    title: "  PARENTING APP",
+    description:
+      "RAG-powered parenting Q&A platform grounded in official Indonesian pediatric resources and WHO/UNICEF. Built with automated red-flag symptom triage, vector similarity filtering, and medical safety guardrails.",
+    tags: ["React", "TanStack Start", "PostgreSQL", "pgvector", "Gemini AI"],
+    href: "https://parenting.andripurnomo.com/",
+    isExternal: true,
+    variant: "default",
+  },
+  {
     category: "Content",
     categoryColor: "bg-white",
     title: "TECH BLOG",
@@ -165,7 +187,7 @@ export default async function Page() {
                   project.variant === "full"
                     ? "md:col-span-2 bg-accent-yellow flex flex-col md:flex-row gap-8 items-center"
                     : "bg-bg-card flex flex-col h-full"
-                }`}
+                  }`}
               >
                 {project.variant === "default" ? (
                   <>
