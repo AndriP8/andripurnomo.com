@@ -1,0 +1,19 @@
+---
+import { youtubeEmbedId } from '@lib/utils';
+
+interface Props {
+  youtubeLink: string;
+}
+
+const { youtubeLink } = Astro.props;
+const embedId = youtubeEmbedId(youtubeLink);
+---
+
+<div class="[&>iframe]:aspect-video [&>iframe]:w-full max-w-5xl mx-auto">
+  <iframe
+    src={`https://www.youtube.com/embed/${embedId}`}
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+    title="Youtube video player"
+  />
+</div>

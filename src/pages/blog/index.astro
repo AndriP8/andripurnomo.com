@@ -1,0 +1,158 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import JsonLd from "@components/JsonLd.astro";
+import { BlogSearch } from "@components/BlogSearch";
+import { BlogTags } from "@components/BlogTags";
+import ClearFilters from "@components/ClearFilters.astro";
+import { SITE_CONFIG } from "@lib/constants";
+import { formatDate } from "@lib/utils";
+import { getCollection } from "astro:content";
+
+const q = Astro.url.searchParams.get("q") || "";
+const tag = Astro.url.searchParams.get("tag") || "";
+
+const allBlogs = await getCollection("blog");
+
+// Filter blogs
+let filteredBlogs = allBlogs;
+if (q) {
+  const query = q.toLowerCase();
+  filteredBlogs = filteredBlogs.filter((blog) => blog.data.title.toLowerCase().includes(query));
+}
+if (tag) {
+  const selectedTags = tag.split(",").map((t) => t.toLowerCase());
+  filteredBlogs = filteredBlogs.filter((blog) =>
+    selectedTags.every((selectedTag) =>
+      blog.data.tags?.some((blogTag) => blogTag.toLowerCase() === selectedTag),
+    ),
+  );
+}
+
+const blogs = filteredBlogs.sort(
+  (a, b) => new Date(b.data.createdAt).getTime() - new Date(a.data.createdAt).getTime()
+);
+
+const allTags = Array.from(new Set(allBlogs.flatMap((blog) => blog.data.tags || []))).sort();
+
+const blogListJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Blog",
+  description: SITE_CONFIG.blogSite.description,
+  url: `${SITE_CONFIG.url}/blog`,
+};
+---
+
+<BaseLayout
+  title="Blog"
+  description={SITE_CONFIG.blogSite.description}
+  keywords={SITE_CONFIG.blogSite.keywords}
+  canonical="/blog"
+>
+  <JsonLd data={blogListJsonLd} />
+  <main class="max-w-5xl mx-auto px-4 md:px-8 pt-28 pb-24">
+    <!-- Header -->
+    <header class="mb-16 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+      <div>
+        <div class="inline-block bg-black text-white px-3 py-1 text-xs font-bold mb-4 transform -rotate-2">
+          DATABASE_ACCESS
+        </div>
+        <h1 class="font-sans text-5xl md:text-7xl font-black uppercase leading-[0.9]">
+          Writing
+          <br />
+          Archive
+        </h1>
+      </div>
+
+      <!-- Search Filter -->
+      <BlogSearch client:load initialSearch={q} />
+    </header>
+
+    <!-- Active Filters -->
+    {(q || tag) && (
+      <div class="mb-6 flex flex-wrap items-center gap-3">
+        <span class="text-sm font-mono text-gray-600">Active filters:</span>
+        {q && (
+          <span class="px-2 py-1 bg-accent-pink border border-black text-xs font-mono">
+            Search: "{q}"
+          </span>
+        )}
+        {tag &&
+          tag.split(",").map((t) => (
+            <span class="px-2 py-1 bg-accent-blue border border-black text-xs font-mono">
+              Tag: #{t}
+            </span>
+          ))}
+        <ClearFilters />
+      </div>
+    )}
+
+    <!-- Tag Filter -->
+    {allTags.length > 0 && (
+      <div class="mb-8">
+        <h2 class="text-sm font-mono font-bold mb-3 uppercase">Filter by tag:</h2>
+        <BlogTags client:load tags={allTags} activeTagString={tag} />
+      </div>
+    )}
+
+    <!-- Archive Table -->
+    <section class="bg-bg-card border-2 border-black shadow-hard mb-12">
+      <!-- Table Header -->
+      <div class="hidden md:grid grid-cols-[120px_1fr_120px] gap-4 p-4 border-b-2 border-black bg-gray-100 font-bold text-xs uppercase tracking-wider">
+        <div>Date</div>
+        <div>Title / Topic</div>
+        <div class="text-right">Read Time</div>
+      </div>
+
+      <!-- Posts -->
+      {blogs.length === 0 ? (
+        <div class="p-8 text-center">
+          <p class="font-mono text-gray-500">No blogs found matching your filters.</p>
+        </div>
+      ) : (
+        blogs.map((blog, index) => {
+          const colors = [
+            "hover:bg-accent-blue",
+            "hover:bg-accent-pink",
+            "hover:bg-accent-yellow",
+            "hover:bg-gray-200",
+          ];
+          const colorClass = colors[index % colors.length];
+          const isLast = index === blogs.length - 1;
+
+          return (
+            <div
+              class={`grid grid-cols-1 md:grid-cols-[120px_1fr_120px] gap-2 md:gap-4 p-4 ${
+                !isLast ? "border-b-2 border-black" : ""
+              }`}
+            >
+              <div class="font-mono text-xs text-gray-500">
+                {formatDate(blog.data.createdAt)}
+              </div>
+              <div>
+                <a
+                  href={`/blog/${blog.slug}`}
+                  class={`font-bold text-lg md:text-base ${colorClass} transition-all inline-block group-hover:translate-x-2`}
+                >
+                  {blog.data.title}
+                </a>
+                {blog.data.tags && blog.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1 mt-2">
+                    {blog.data.tags.map((t) => (
+                      <span class="px-1.5 py-0.5 text-[10px] font-mono bg-gray-100 border border-gray-300">
+                        #{t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div class="hidden md:block text-right text-xs font-mono">
+                {blog.data.timeToRead} MIN
+              </div>
+            </div>
+          );
+        })
+      )}
+    </section>
+  </main>
+</BaseLayout>

@@ -1,0 +1,61 @@
+---
+import Navbar from "@components/Navbar.astro";
+import Footer from "@components/Footer.astro";
+import { SITE_CONFIG } from "@lib/constants";
+import "../../styles/globals.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  image?: string;
+  canonical?: string;
+}
+
+const {
+  title = SITE_CONFIG.name,
+  description = SITE_CONFIG.description,
+  keywords = SITE_CONFIG.keywords,
+  image = SITE_CONFIG.siteImages,
+  canonical = Astro.url.pathname,
+} = Astro.props;
+
+const pageTitle = title === SITE_CONFIG.name ? SITE_CONFIG.name : `${title} | ${SITE_CONFIG.name}`;
+const canonicalURL = new URL(canonical, SITE_CONFIG.url);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords.join(", ")} />
+    <link rel="canonical" href={canonicalURL} />
+
+    {SITE_CONFIG.favIcons.map((icon) => (
+      <link rel={icon.rel} type={icon.type} href={icon.url} sizes={icon.sizes} />
+    ))}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:site_name" content={SITE_CONFIG.name} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    <meta name="twitter:creator" content="@Andrii_purnomo" />
+  </head>
+  <body>
+    <Navbar />
+    <slot />
+    <Footer />
+  </body>
+</html>

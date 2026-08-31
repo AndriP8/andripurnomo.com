@@ -1,0 +1,9 @@
+---
+interface Props {
+  bgColor?: string;
+}
+
+const { bgColor = 'bg-black' } = Astro.props;
+---
+
+<div class={`w-1 h-1 border-0 rounded-full ${bgColor}`} />

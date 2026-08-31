@@ -1,0 +1,63 @@
+---
+const pathname = Astro.url.pathname;
+const isHomePage = pathname === '/';
+const isBlogPage = pathname.startsWith('/blog');
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 bg-accent-yellow border-b-2 border-black h-14 flex items-center justify-between px-4 md:px-8">
+  <a href="/" class="font-bold text-lg tracking-tighter hover:underline">
+    ANDRI.PURNOMO
+  </a>
+  <div class="hidden md:flex gap-6 text-sm font-bold">
+    {isHomePage ? (
+      <>
+        <a href="#work" class="hover:bg-black hover:text-white px-2 py-1 transition-colors">
+          WORK_
+        </a>
+        <a href="#writing" class="hover:bg-black hover:text-white px-2 py-1 transition-colors">
+          WRITING_
+        </a>
+        <a href="#contact" class="hover:bg-black hover:text-white px-2 py-1 transition-colors">
+          CONTACT_
+        </a>
+      </>
+    ) : isBlogPage ? (
+      <>
+        <a href="/#work" class="hover:bg-black hover:text-white px-2 py-1 transition-colors">
+          WORK_
+        </a>
+        <a href="/blog" class="bg-black text-white px-2 py-1 transition-colors">
+          WRITING_
+        </a>
+        <a href="/#contact" class="hover:bg-black hover:text-white px-2 py-1 transition-colors">
+          CONTACT_
+        </a>
+      </>
+    ) : (
+      <>
+        <a href="/" class="hover:bg-black hover:text-white px-2 py-1 transition-colors">
+          HOME_
+        </a>
+        <a href="/blog" class="hover:bg-black hover:text-white px-2 py-1 transition-colors">
+          BLOG_
+        </a>
+        <a
+          href="/about"
+          class={
+            pathname === '/about'
+              ? 'bg-black text-white px-2 py-1 transition-colors'
+              : 'hover:bg-black hover:text-white px-2 py-1 transition-colors'
+          }
+        >
+          ABOUT_
+        </a>
+      </>
+    )}
+  </div>
+  <a
+    href="mailto:andri.adrp@gmail.com"
+    class="bg-black text-white px-4 py-1 text-sm font-bold hover:bg-white hover:text-black border-2 border-transparent hover:border-black transition-all"
+  >
+    HIRE ME
+  </a>
+</nav>

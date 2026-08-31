@@ -1,0 +1,118 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import JsonLd from "@components/JsonLd.astro";
+import YouTubeEmbed from "@components/YouTubeEmbed.astro";
+import { TweetEmbed } from "@components/TweetEmbed";
+import { SITE_CONFIG } from "@lib/constants";
+import { formatDate } from "@lib/utils";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const blogs = await getCollection("blog");
+  return blogs.map((blog) => ({
+    params: { slug: blog.id },
+    props: { blog },
+  }));
+}
+
+const { blog } = Astro.props;
+const { Content } = await render(blog);
+
+const blogJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: blog.data.title,
+  description: blog.data.description,
+  datePublished: blog.data.createdAt,
+  dateModified: blog.data.updatedAt || blog.data.createdAt,
+  author: {
+    "@type": "Person",
+    name: SITE_CONFIG.author.name,
+    url: SITE_CONFIG.url,
+  },
+  publisher: {
+    "@type": "Person",
+    name: SITE_CONFIG.author.name,
+  },
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": `${SITE_CONFIG.url}/blog/${blog.id}`,
+  },
+};
+---
+
+<BaseLayout
+  title={blog.data.title}
+  description={blog.data.description}
+  canonical={`/blog/${blog.id}`}
+>
+  <JsonLd data={blogJsonLd} />
+  <main class="max-w-4xl mx-auto px-4 md:px-8 pt-28 pb-24">
+    <!-- Back Navigation -->
+    <div class="mb-8">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 font-bold hover:bg-black hover:text-white px-4 py-2 border-2 border-black shadow-hard-sm hover:shadow-none transition-all bg-white"
+      >
+        <span>&lt;-</span> BACK TO HOME
+      </a>
+    </div>
+
+    <!-- Article Container ("The Folder") -->
+    <article class="relative bg-bg-card border-2 border-black shadow-hard">
+      <!-- Top "Tab" -->
+      <div class="absolute -top-11 left-[-2px] bg-accent-pink border-2 border-black border-b-0 h-12 px-6 flex items-center font-bold font-mono text-sm z-10">
+        BLOG_POST
+      </div>
+
+      <!-- Article Header -->
+      <div class="p-8 md:p-12 border-b-2 border-black bg-white relative z-20">
+        <h1 class="font-sans text-4xl md:text-6xl font-black leading-[0.95] mb-8 uppercase">
+          {blog.data.title}
+        </h1>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs text-gray-500 pt-6 border-t-2 border-dashed border-black">
+          <div>
+            PUBLISHED:{" "}
+            <span class="text-black font-bold">
+              {formatDate(blog.data.createdAt).toUpperCase()}
+            </span>
+          </div>
+          <div>
+            READ TIME:{" "}
+            <span class="text-black font-bold">{blog.data.timeToRead} MIN READ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Article Body -->
+      <div class="p-8 md:p-12 prose max-w-none bg-white font-sans text-black break-word-blog-content">
+        <Content components={{ YouTubeEmbed, TwitterEmbed: TweetEmbed }} />
+      </div>
+
+      <!-- Footer / Author Box -->
+      <div class="border-t-2 border-black bg-bg-main p-8 md:p-12">
+        <div class="flex flex-col md:flex-row gap-6 items-center">
+          <div class="w-20 h-20 bg-black border-2 border-white shadow-hard shrink-0 flex items-center justify-center text-white font-bold text-2xl">
+            AP
+          </div>
+          <div>
+            <h3 class="font-bold text-xl mb-2">WRITTEN BY ANDRI PURNOMO</h3>
+            <p class="font-mono text-sm mb-4 max-w-lg">
+              Frontend Engineer specializing in React, TypeScript, and NextJS. Passionate
+              about building performant web applications and sharing knowledge.
+            </p>
+            <a
+              href="https://twitter.com/Andrii_purnomo"
+              target="_blank"
+              rel="noreferrer noopener"
+              class="text-sm font-bold underline hover:bg-black hover:text-white"
+            >
+              FOLLOW ON TWITTER -&gt;
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+</BaseLayout>
