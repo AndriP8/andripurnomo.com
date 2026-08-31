@@ -49,6 +49,7 @@ const homeJsonLd = {
 interface Project {
   category: string;
   categoryColor: string;
+  cardBgColor?: string;
   title: string;
   description: string;
   tags?: string[];
@@ -104,8 +105,26 @@ const PROJECTS: Project[] = [
     variant: "default",
   },
   {
+    category: "Interactive Tool",
+    categoryColor: "bg-accent-pink",
+    cardBgColor: "bg-accent-blue",
+    title: "UNDER THE HOOD",
+    description:
+      "Visual learning platform designed to internalize complex computer science mental models through hands-on interactive simulations. Built to demonstrate deep runtime mechanics across database indexing, V8 event loops, and caching strategies.",
+    tags: ["React", "TypeScript", "Framer Motion", "TanStack Router", "Tailwind CSS"],
+    href: "https://visualizations.andripurnomo.com/",
+    isExternal: true,
+    variant: "full",
+    terminalLines: [
+      "> pnpm run visualize",
+      "> Event Loop: Queueing microtasks...",
+      "> B-Tree Index: Rebalancing...",
+    ],
+  },
+  {
     category: "Content",
     categoryColor: "bg-white",
+    cardBgColor: "bg-accent-yellow",
     title: "TECH BLOG",
     description:
       "Writing about building web applications and how libraries work under the hood. Practical insights, no fluff.",
@@ -113,7 +132,7 @@ const PROJECTS: Project[] = [
     isExternal: false,
     variant: "full",
     terminalLines: [
-      "> npm run blog",
+      "> pnpm run blog",
       "> Building knowledge...",
       "> Sharing experience...",
     ],
@@ -182,7 +201,7 @@ const sortedBlogs = allBlogs
             rel={project.isExternal ? "noreferrer noopener" : undefined}
             class={`group neo-card border-2 border-black p-6 shadow-hard ${
               project.variant === "full"
-                ? "md:col-span-2 bg-accent-yellow flex flex-col md:flex-row gap-8 items-center"
+                ? `md:col-span-2 ${project.cardBgColor || "bg-accent-yellow"} flex flex-col md:flex-row gap-8 items-center`
                 : "bg-bg-card flex flex-col h-full"
             }`}
           >
@@ -214,19 +233,33 @@ const sortedBlogs = allBlogs
               </>
             ) : (
               <>
-                <div class="flex-1">
-                  <div class="border-b-2 border-black border-dashed pb-4 mb-4">
+                <div class="flex-1 w-full">
+                  <div class="border-b-2 border-black border-dashed pb-4 mb-4 flex justify-between items-start">
                     <span
                       class={`${project.categoryColor} border-2 border-black px-2 py-1 text-xs font-bold uppercase`}
                     >
                       {project.category}
                     </span>
+                    {project.isExternal && (
+                      <span class="text-2xl group-hover:rotate-45 transition-transform duration-200">
+                        ↗
+                      </span>
+                    )}
                   </div>
                   <h3 class="font-sans text-4xl font-bold mb-4">{project.title}</h3>
-                  <p class="font-medium">{project.description}</p>
+                  <p class="font-medium mb-4">{project.description}</p>
+                  {project.tags && (
+                    <div class="flex gap-2 flex-wrap mt-4">
+                      {project.tags.map((tag) => (
+                        <span class="text-xs border border-black px-2 py-1 bg-gray-100 text-black font-normal">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 {project.terminalLines && (
-                  <div class="bg-black text-white p-4 font-mono text-xs w-full md:w-64 border-2 border-white md:border-black">
+                  <div class="bg-black text-white p-4 font-mono text-xs w-full md:w-64 border-2 border-white md:border-black shrink-0">
                     {project.terminalLines.map((line) => (
                       <div>{line}</div>
                     ))}
