@@ -6,13 +6,18 @@ interface BlogTagsProps {
 export function BlogTags({ tags, activeTagString = "" }: BlogTagsProps) {
   if (tags.length === 0) return null;
 
-  const activeTagsArray = activeTagString ? activeTagString.split(",") : [];
+  const activeTagsArray = activeTagString
+    ? activeTagString.split(",").map((t) => t.trim()).filter(Boolean)
+    : [];
+
+  const isTagActive = (tag: string) =>
+    activeTagsArray.some((t) => t.toLowerCase() === tag.toLowerCase());
 
   const toggleTag = (tag: string) => {
     const url = new URL(window.location.href);
     let newTags: string[];
-    if (activeTagsArray.includes(tag)) {
-      newTags = activeTagsArray.filter((t) => t !== tag);
+    if (isTagActive(tag)) {
+      newTags = activeTagsArray.filter((t) => t.toLowerCase() !== tag.toLowerCase());
     } else {
       newTags = [...activeTagsArray, tag];
     }
@@ -27,7 +32,7 @@ export function BlogTags({ tags, activeTagString = "" }: BlogTagsProps) {
   return (
     <div className="flex flex-wrap gap-2">
       {tags.map((tag) => {
-        const isActive = activeTagsArray.includes(tag);
+        const isActive = isTagActive(tag);
         return (
           <button
             key={tag}
