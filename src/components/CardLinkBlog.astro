@@ -10,10 +10,10 @@ interface Props {
 const { blog } = Astro.props;
 ---
 
-<a href={`/blog/${blog.slug}`} class="wrapper-link-blog">
+<a href={`/blog/${blog.id}`} class="wrapper-link-blog">
   <div>
     <img
-      src={`/images/blogs/${blog.slug}/cover/resource.jpg`}
+      src={`/images/blogs/${blog.id}/cover/resource.jpg`}
       alt={blog.data.cover.alt}
       class="w-full h-[450px] object-cover rounded-xl"
       width={350}
